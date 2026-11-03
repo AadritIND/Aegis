@@ -6,7 +6,7 @@ export const SITE = {
   version: '1.0.0',
   released: 'October 2026',
   // Repository / support links — point these at the real destinations when they exist.
-  repo: 'https://github.com/',
+  repo: 'https://github.com/AadritIND/Aegis',
   support: 'mailto:hello@aegis.example',
 }
 
