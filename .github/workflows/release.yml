@@ -39,11 +39,12 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ steps.version.outputs.version }}
         run: |
-          if gh release view "v$VERSION" >/dev/null 2>&1; then
+          if gh release view "v$VERSION" -R "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             echo "Release v$VERSION already exists"
             exit 0
           fi
           gh release create "v$VERSION" \
+            -R "$GITHUB_REPOSITORY" \
             --draft \
             --title "Aegis $VERSION" \
             --generate-notes \
@@ -114,10 +115,10 @@ jobs:
     steps:
       - name: Verify update manifests
         run: |
-          ASSETS=$(gh release view "v$VERSION" --json assets --jq '.assets[].name')
+          ASSETS=$(gh release view "v$VERSION" -R "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name')
           echo "$ASSETS"
           echo "$ASSETS" | grep -qx 'latest.yml'
           echo "$ASSETS" | grep -qx 'latest-mac.yml'
 
       - name: Make the release public
-        run: gh release edit "v$VERSION" --draft=false --latest
+        run: gh release edit "v$VERSION" -R "$GITHUB_REPOSITORY" --draft=false --latest
