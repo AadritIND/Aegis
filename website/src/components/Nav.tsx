@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { ArrowUpRight, Download } from 'lucide-react'
-import { PLATFORMS, RELEASE } from '../config'
+import { PLATFORMS, RELEASE, SITE } from '../config'
 import { detectPlatform } from '../lib/platform'
 import { lockScroll } from '../lib/smooth'
 import { Logo } from './Logo'
@@ -186,7 +186,7 @@ export function Nav({ tint, onTint }: { tint: string; onTint: (tint: string) => 
           >
             Read the security model <ArrowUpRight size={14} />
           </a>
-          <span className="mono dim">v1.0.0 · no account · no cloud</span>
+          <span className="mono dim">v{SITE.version} · no account · no cloud</span>
         </div>
       </div>
     </>

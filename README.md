@@ -145,14 +145,19 @@ npm run preview    # serve the built output on :5311
 ```
 
 Everything editable about the site's claims and links lives in [`website/src/config.ts`](website/src/config.ts) —
-version, platform list, FAQ copy, repository links and the installer's size and SHA-256.
+version, platform list, FAQ copy, repository links, and the installer's size and SHA-256.
 
-The download cards serve the real artifacts: `website/public/downloads/Aegis-Setup-1.0.0.exe` (Windows NSIS),
-plus `Aegis-1.0.0-mac-arm64.zip` and `Aegis-1.0.0-mac-x64.zip` for Apple silicon and Intel Macs. The folder is
-gitignored — 290 MB of binaries do not belong in the repository. For a hosted deploy, upload the packages to a
-release bucket or GitHub release and point the `file` fields in `website/src/config.ts` at those URLs; static
-hosts will not carry 80–105 MB assets. Sizes and SHA-256 digests in that file are the ones printed by the
-build scripts, so re-run the build and update them whenever you ship a new version.
+The download cards point at the latest published GitHub release (`releases/latest/download/...`), so installers
+are never committed and the buttons always serve the same build `electron-updater` offers. The version and
+digests in `website/src/config.ts` describe v1.0.3; refresh them when the site should name a newer release.
+`website/public/downloads/` is gitignored and no longer needed for the site.
+
+### Deploy the site
+
+The site deploys to **https://aadritind.github.io/Aegis/** via
+[`.github/workflows/website.yml`](.github/workflows/website.yml) on every push that changes `website/`, or
+manually from **Actions → Deploy website → Run workflow**. The workflow builds `website/dist`, uploads it as
+the Pages artifact, and deploys it. Vite uses a relative base, so the same build also works at a domain root.
 
 Site visuals can be re-captured for review with:
 

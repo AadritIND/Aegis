@@ -1,13 +1,15 @@
 /* Single place to change anything the site links to or claims. */
 
+const LATEST_RELEASE = 'https://github.com/AadritIND/Aegis/releases/latest/download'
+
 export const SITE = {
   name: 'Aegis',
   tagline: 'The quiet vault for everything private.',
-  version: '1.0.0',
-  released: 'October 2026',
-  // Repository / support links — point these at the real destinations when they exist.
+  version: '1.0.3',
+  released: 'November 2026',
+  // Repository / support links.
   repo: 'https://github.com/AadritIND/Aegis',
-  support: 'mailto:hello@aegis.example',
+  support: 'https://github.com/AadritIND/Aegis/issues',
 }
 
 export type ReleaseArtifact = {
@@ -24,7 +26,7 @@ export type Platform = {
   file: string | null
   size: string
   status: 'ready' | 'building'
-  /** platforms whose build ships more than one artifact (e.g. two Mac chips) */
+  /** platforms whose build ships more than one artifact */
   variants?: ReleaseArtifact[]
 }
 
@@ -33,29 +35,29 @@ export const PLATFORMS: Platform[] = [
     id: 'windows',
     label: 'Windows',
     detail: 'Windows 10 / 11 · x64 installer',
-    file: '/downloads/Aegis-Setup-1.0.0.exe',
+    file: `${LATEST_RELEASE}/Aegis-Setup.exe`,
     size: '81 MB',
     status: 'ready',
   },
   {
     id: 'macos',
     label: 'macOS',
-    detail: 'macOS 11+ · Apple silicon & Intel',
-    file: '/downloads/Aegis-1.0.0-mac-arm64.zip',
-    size: '99 / 104 MB',
+    detail: 'macOS 11+ · universal (Apple silicon & Intel)',
+    file: `${LATEST_RELEASE}/Aegis-mac-universal.zip`,
+    size: '171 / 177 MB',
     status: 'ready',
     variants: [
       {
-        label: 'Apple silicon',
-        file: '/downloads/Aegis-1.0.0-mac-arm64.zip',
-        size: '99 MB',
-        sha256: '46b4f5051c701c1c17ba0a1e3d07019af4843c124cce31b049a0bd7a92ae4996',
+        label: 'Universal .zip',
+        file: `${LATEST_RELEASE}/Aegis-mac-universal.zip`,
+        size: '171 MB',
+        sha256: 'dacc017de30ca542a3c0a98727785bece0ce51a11a71c5bfe4272c4970e5bb23',
       },
       {
-        label: 'Intel',
-        file: '/downloads/Aegis-1.0.0-mac-x64.zip',
-        size: '104 MB',
-        sha256: 'b294d39da5853ebddeb848c0f5fe9c1e3f88060fff4f43f55d192ba6e7eae55b',
+        label: 'Universal .dmg',
+        file: `${LATEST_RELEASE}/Aegis-mac-universal.dmg`,
+        size: '177 MB',
+        sha256: 'beb9019b4638148b1b514ac2fd946d6d118d1ed00164ac16be2018315c4ba1ad',
       },
     ],
   },
@@ -104,27 +106,26 @@ export const FAQ = [
   },
 ]
 
-/* Real artifacts produced by `npm run dist` (Windows) and `npm run dist:mac`
-   (macOS) in the app project.
-   Hosting note: keep the binaries next to the site (public/downloads) or move them
-   to a release bucket / GitHub release and point the `file` fields at those URLs.
-   Static hosts will not carry 80–105 MB assets. */
+/* The installers live on the GitHub release, not in this repository, so the
+   buttons always serve the same build electron-updater offers. Version and
+   digests below describe v1.0.3; refresh them when the site copy should name
+   a newer build. */
 export const RELEASE = {
   windows: {
-    file: '/downloads/Aegis-Setup-1.0.0.exe',
+    file: `${LATEST_RELEASE}/Aegis-Setup.exe`,
     size: '81 MB',
-    sha256: 'af4f013f91c8212542c469383c3147cbf17e1f865172a642a399cbad4222778b',
+    sha256: '9817b61468695c751d4cc5a646042bc5bf870d324bd3f025294c3f509541bd5a',
   },
   macos: {
-    arm64: {
-      file: '/downloads/Aegis-1.0.0-mac-arm64.zip',
-      size: '99 MB',
-      sha256: '46b4f5051c701c1c17ba0a1e3d07019af4843c124cce31b049a0bd7a92ae4996',
+    zip: {
+      file: `${LATEST_RELEASE}/Aegis-mac-universal.zip`,
+      size: '171 MB',
+      sha256: 'dacc017de30ca542a3c0a98727785bece0ce51a11a71c5bfe4272c4970e5bb23',
     },
-    x64: {
-      file: '/downloads/Aegis-1.0.0-mac-x64.zip',
-      size: '104 MB',
-      sha256: 'b294d39da5853ebddeb848c0f5fe9c1e3f88060fff4f43f55d192ba6e7eae55b',
+    dmg: {
+      file: `${LATEST_RELEASE}/Aegis-mac-universal.dmg`,
+      size: '177 MB',
+      sha256: 'beb9019b4638148b1b514ac2fd946d6d118d1ed00164ac16be2018315c4ba1ad',
     },
   },
 }

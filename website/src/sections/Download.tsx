@@ -220,7 +220,7 @@ export function Download() {
             </div>
             <p>
               There is no code-signing certificate behind these packages — one costs real money and Aegis is free —
-              so each system will object exactly once. The checksums above are the files as shipped.
+              so each system will object exactly once. The checksums above are for v{SITE.version} as shipped.
             </p>
             <details>
               <summary className="mono">How to open an unsigned build</summary>
@@ -247,9 +247,9 @@ export function Download() {
           </summary>
           <div className="dl__allrows">
             {[
-              { name: `Aegis-Setup-${SITE.version}.exe`, label: 'Windows x64', hash: RELEASE.windows.sha256 },
-              { name: `Aegis-${SITE.version}-mac-arm64.zip`, label: 'macOS Apple silicon', hash: RELEASE.macos.arm64.sha256 },
-              { name: `Aegis-${SITE.version}-mac-x64.zip`, label: 'macOS Intel', hash: RELEASE.macos.x64.sha256 },
+              { name: 'Aegis-Setup.exe', label: 'Windows x64', hash: RELEASE.windows.sha256 },
+              { name: 'Aegis-mac-universal.zip', label: 'macOS universal (.zip)', hash: RELEASE.macos.zip.sha256 },
+              { name: 'Aegis-mac-universal.dmg', label: 'macOS universal (.dmg)', hash: RELEASE.macos.dmg.sha256 },
             ].map((row) => (
               <div key={row.name} className="dl__allrow">
                 <span className="mono">{row.label}</span>

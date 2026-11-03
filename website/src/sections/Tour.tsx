@@ -4,45 +4,46 @@ import { gsap, ScrollTrigger } from '../lib/gsap'
 import { scrollToY } from '../lib/smooth'
 import { useReducedMotion } from '../lib/useReducedMotion'
 import { SectionHead } from '../components/ui'
+import { SITE } from '../config'
 
 const SHOTS = [
   {
-    file: '/shots/dashboard.webp',
+    file: './shots/dashboard.webp',
     alt: 'Aegis dashboard showing vault posture and recent items',
     title: 'The morning view',
     copy: 'Posture, expiring secrets, recent changes and every quick action — one screen, no dashboard theatre.',
     url: 'aegis / dashboard',
   },
   {
-    file: '/shots/vault.webp',
+    file: './shots/vault.webp',
     alt: 'Aegis vault list with typed secrets',
     title: 'An index, not a spreadsheet',
     copy: 'Every secret is typed, searchable and readable at a glance. Favourites rise; clutter does not.',
     url: 'aegis / vault',
   },
   {
-    file: '/shots/detail.webp',
+    file: './shots/detail.webp',
     alt: 'Aegis item detail with revealed password and TOTP',
     title: 'One secret, whole',
     copy: 'Reveal, copy, rotate, inspect history. The password, the TOTP and the notes travel together.',
     url: 'aegis / vault / linear',
   },
   {
-    file: '/shots/autofill.webp',
+    file: './shots/autofill.webp',
     alt: 'Aegis secure browser window filling a login',
     title: 'Fill on request',
     copy: 'Aegis owns the browser window, matches logins by domain and waits for a deliberate click.',
     url: 'aegis://browser',
   },
   {
-    file: '/shots/forge.webp',
+    file: './shots/forge.webp',
     alt: 'Aegis password forge with entropy meter',
     title: 'The forge',
     copy: 'Rejection-sampled randomness, passphrase mode, live entropy. Nothing generated ever leaves the app.',
     url: 'aegis / forge',
   },
   {
-    file: '/shots/audit.webp',
+    file: './shots/audit.webp',
     alt: 'Aegis audit panel with local scan results',
     title: 'The honest audit',
     copy: 'Reuse, weakness, age and breach exposure — measured on this machine and stored nowhere else.',
@@ -121,7 +122,7 @@ export function Tour() {
             </>
           }
           copy="Six real screens from the app, not renders. Scroll to walk through the parts that matter, from the morning dashboard to the audit that tells you what to fix."
-          aside={<span className="mono dim">Actual build · v1.0.0</span>}
+          aside={<span className="mono dim">Actual build · v{SITE.version}</span>}
         />
       </div>
 

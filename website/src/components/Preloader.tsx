@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { SITE } from '../config'
 import { Logo } from './Logo'
 
 /* The cold start. A machined door, eight bolts, a wheel that answers to
@@ -20,18 +21,18 @@ const PHASES = [
 /* Every screenshot the product sections use. Warming them here means the
    tour never pops a blank frame after the door opens. */
 const PLATES = [
-  '/shots/dashboard.webp',
-  '/shots/vault.webp',
-  '/shots/detail.webp',
-  '/shots/autofill.webp',
-  '/shots/forge.webp',
-  '/shots/audit.webp',
-  '/shots/scrolled.webp',
-  '/shots/settings.webp',
-  '/shots/onboarding.webp',
-  '/shots/editor.webp',
-  '/shots/palette.webp',
-  '/shots/compact.webp',
+  './shots/dashboard.webp',
+  './shots/vault.webp',
+  './shots/detail.webp',
+  './shots/autofill.webp',
+  './shots/forge.webp',
+  './shots/audit.webp',
+  './shots/scrolled.webp',
+  './shots/settings.webp',
+  './shots/onboarding.webp',
+  './shots/editor.webp',
+  './shots/palette.webp',
+  './shots/compact.webp',
 ]
 
 const FONT_FACES = [
@@ -555,7 +556,7 @@ export function Preloader({ onDone }: { onDone: () => void }) {
               <span className="bootv__spec bootv__spec--r">
                 SN 01
                 <br />
-                1.0.0
+                {SITE.version}
               </span>
             </div>
             <span className="bootv__edge" />

@@ -75,7 +75,7 @@ export function Hero({ booted, tint }: { booted: boolean; tint: string }) {
         LOCAL VOLUME · 1 FILE
       </div>
       <div className="hero__side hero__side--right mono" aria-hidden="true">
-        {SITE.version} — OCT 2026
+        {SITE.version} — NOV 2026
       </div>
 
       <div className="container hero__inner">
@@ -134,7 +134,7 @@ export function Hero({ booted, tint }: { booted: boolean; tint: string }) {
             <span className="mono">v{SITE.version}</span>
             <span className="mono">free forever</span>
             <span className="mono">
-              {detected === 'macos' ? 'arm64 / intel' : '81 mb installer'}
+              {detected === 'macos' ? 'universal build' : '81 MB installer'}
             </span>
           </div>
         </div>
