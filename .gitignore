@@ -1,0 +1,18 @@
+node_modules/
+dist/
+release/
+.tmp-*/
+screenshots/*
+!screenshots/02-dashboard.png
+shots-site/
+*.log
+.DS_Store
+.cloud-attachments/
+.freebuff/
+.kombai/
+
+# web build artefacts
+website/dist/
+website/node_modules/
+website/public/downloads/
+*.tsbuildinfo

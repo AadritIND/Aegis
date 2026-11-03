@@ -1,0 +1,123 @@
+name: Release Aegis
+
+# Every push to main ships a new build so installed copies can update.
+# The patch number comes from the Actions run number, so it always moves
+# forward without anyone editing package.json by hand.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-main
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    name: Prepare release
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: version
+        name: Compute version
+        run: |
+          BASE=$(node -p "require('./package.json').version")
+          MAJOR=$(echo "$BASE" | cut -d. -f1)
+          MINOR=$(echo "$BASE" | cut -d. -f2)
+          VERSION="${MAJOR}.${MINOR}.${GITHUB_RUN_NUMBER}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Releasing Aegis $VERSION"
+
+      - name: Create draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          if gh release view "v$VERSION" >/dev/null 2>&1; then
+            echo "Release v$VERSION already exists"
+            exit 0
+          fi
+          gh release create "v$VERSION" \
+            --draft \
+            --title "Aegis $VERSION" \
+            --generate-notes \
+            --target "$GITHUB_SHA"
+
+  windows:
+    name: Build Windows
+    needs: prepare
+    runs-on: windows-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      VERSION: ${{ needs.prepare.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Stamp build version
+        run: npm version "$env:VERSION" --no-git-tag-version --allow-same-version --force
+
+      - name: Compile renderer
+        run: npm run build
+
+      - name: Package and upload installer
+        run: npx --no-install electron-builder --win --publish always
+
+  macos:
+    name: Build macOS
+    needs: prepare
+    runs-on: macos-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      VERSION: ${{ needs.prepare.outputs.version }}
+      CSC_IDENTITY_AUTO_DISCOVERY: "false"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Stamp build version
+        run: npm version "$VERSION" --no-git-tag-version --allow-same-version --force
+
+      - name: Compile renderer
+        run: npm run build
+
+      - name: Package and upload universal app
+        run: npx --no-install electron-builder --mac --universal --publish always
+
+  publish:
+    name: Publish release
+    needs: [prepare, windows, macos]
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      VERSION: ${{ needs.prepare.outputs.version }}
+    steps:
+      - name: Verify update manifests
+        run: |
+          ASSETS=$(gh release view "v$VERSION" --json assets --jq '.assets[].name')
+          echo "$ASSETS"
+          echo "$ASSETS" | grep -qx 'latest.yml'
+          echo "$ASSETS" | grep -qx 'latest-mac.yml'
+
+      - name: Make the release public
+        run: gh release edit "v$VERSION" --draft=false --latest

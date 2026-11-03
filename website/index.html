@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aegis — Nothing leaves this machine</title>
+    <meta
+      name="description"
+      content="A local-first desktop vault for passwords, API keys, cards and private notes. One encrypted file on your own disk. AES-256-GCM, scrypt, zero network calls. Free for Windows and macOS."
+    />
+    <meta name="theme-color" content="#070706" />
+    <meta name="color-scheme" content="dark" />
+    <meta property="og:title" content="Aegis — Nothing leaves this machine" />
+    <meta
+      property="og:description"
+      content="A local-first desktop vault for passwords, API keys and secrets. Encrypted on your disk. Never in a cloud. Free for Windows and macOS."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/og.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Aegis — Nothing leaves this machine" />
+    <meta
+      name="twitter:description"
+      content="A local-first desktop vault for passwords, API keys and secrets. Encrypted on your disk. Never in a cloud."
+    />
+    <meta name="twitter:image" content="/og.jpg" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script>
+      try {
+        var tint = localStorage.getItem('aegis.tint')
+        if (tint === 'ultra' || tint === 'ember' || tint === 'acid') {
+          document.documentElement.dataset.tint = tint
+        }
+      } catch (error) {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
