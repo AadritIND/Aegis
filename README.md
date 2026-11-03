@@ -147,17 +147,32 @@ npm run preview    # serve the built output on :5311
 Everything editable about the site's claims and links lives in [`website/src/config.ts`](website/src/config.ts) —
 version, platform list, FAQ copy, repository links, and the installer's size and SHA-256.
 
-The download cards point at the latest published GitHub release (`releases/latest/download/...`), so installers
-are never committed and the buttons always serve the same build `electron-updater` offers. The version and
-digests in `website/src/config.ts` describe v1.0.3; refresh them when the site should name a newer release.
-`website/public/downloads/` is gitignored and no longer needed for the site.
+The site is live at **https://aegis-desktop.vercel.app**. The download buttons call the site's own backend
+(`/api/download?asset=windows|mac-zip|mac-dmg`), which resolves the latest GitHub release on the server and
+redirects to the matching installer. The binaries stay on GitHub Releases because Vercel functions have a
+response-size limit; the backend gives the site stable same-origin URLs without duplicating 300 MB of
+installers. The version, sizes and SHA-256 values in `website/src/config.ts` are the fallback when the API is
+unavailable; the page refreshes them from `/api/release` when the backend responds.
 
 ### Deploy the site
 
-The site deploys to **https://aadritind.github.io/Aegis/** via
-[`.github/workflows/website.yml`](.github/workflows/website.yml) on every push that changes `website/`, or
-manually from **Actions → Deploy website → Run workflow**. The workflow builds `website/dist`, uploads it as
-the Pages artifact, and deploys it. Vite uses a relative base, so the same build also works at a domain root.
+The Vercel project uses `website/` as its root, builds with `npm run build`, and publishes `dist`. Its two
+serverless functions live in `website/api`: `GET /api/release` returns the latest release metadata and
+`GET /api/download?asset=...` redirects whitelisted installer requests. Deploy from the site directory:
+
+```bash
+cd website
+vercel link        # first time on a new machine; choose aegis-desktop
+vercel deploy --prod
+```
+
+Set an optional `GITHUB_TOKEN` environment variable in the Vercel project to raise the GitHub API rate limit;
+public releases work without it. `website/.vercelignore` keeps the local `public/downloads/` archive and local
+env files out of deployments. Run `vercel git connect` from `website/` if you want Vercel to deploy on Git
+pushes instead of using the CLI.
+
+`npm run dev` serves the Vite UI only and links directly to GitHub; run `vercel dev` from `website/` when you
+want to exercise the API routes locally.
 
 Site visuals can be re-captured for review with:
 

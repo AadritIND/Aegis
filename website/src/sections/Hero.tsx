@@ -1,7 +1,8 @@
 import { useLayoutEffect, useRef } from 'react'
 import { ArrowDown, ArrowUpRight, Download, KeyRound, ShieldCheck, WifiOff } from 'lucide-react'
-import { PLATFORMS, RELEASE, SITE } from '../config'
+import { PLATFORMS, RELEASE } from '../config'
 import { detectPlatform } from '../lib/platform'
+import { useRelease } from '../lib/release'
 import { useReducedMotion } from '../lib/useReducedMotion'
 import { gsap } from '../lib/gsap'
 import { VaultCore } from '../components/VaultCore'
@@ -12,6 +13,7 @@ export function Hero({ booted, tint }: { booted: boolean; tint: string }) {
   const reduced = useReducedMotion()
   const detected = detectPlatform()
   const mac = detectPlatform() === 'macos'
+  const { version } = useRelease()
 
   const windows = PLATFORMS.find((platform) => platform.id === 'windows')
   const installHref = mac ? '#download' : (windows?.file ?? RELEASE.windows.file)
@@ -75,7 +77,7 @@ export function Hero({ booted, tint }: { booted: boolean; tint: string }) {
         LOCAL VOLUME · 1 FILE
       </div>
       <div className="hero__side hero__side--right mono" aria-hidden="true">
-        {SITE.version} — NOV 2026
+        {version} — NOV 2026
       </div>
 
       <div className="container hero__inner">
@@ -131,7 +133,7 @@ export function Hero({ booted, tint }: { booted: boolean; tint: string }) {
           </div>
 
           <div className="hero__meta">
-            <span className="mono">v{SITE.version}</span>
+            <span className="mono">v{version}</span>
             <span className="mono">free forever</span>
             <span className="mono">
               {detected === 'macos' ? 'universal build' : '81 MB installer'}

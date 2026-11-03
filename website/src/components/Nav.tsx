@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { ArrowUpRight, Download } from 'lucide-react'
-import { PLATFORMS, RELEASE, SITE } from '../config'
+import { PLATFORMS, RELEASE } from '../config'
 import { detectPlatform } from '../lib/platform'
+import { useRelease } from '../lib/release'
 import { lockScroll } from '../lib/smooth'
 import { Logo } from './Logo'
 
@@ -28,6 +29,7 @@ export function Nav({ tint, onTint }: { tint: string; onTint: (tint: string) => 
   const [menu, setMenu] = useState(false)
   const nav = useRef<HTMLElement>(null)
   const mac = detectPlatform() === 'macos'
+  const { version } = useRelease()
   const href = mac ? '#download' : (PLATFORMS.find((p) => p.id === 'windows')?.file ?? RELEASE.windows.file)
 
   useEffect(() => {
@@ -186,7 +188,7 @@ export function Nav({ tint, onTint }: { tint: string; onTint: (tint: string) => 
           >
             Read the security model <ArrowUpRight size={14} />
           </a>
-          <span className="mono dim">v{SITE.version} · no account · no cloud</span>
+          <span className="mono dim">v{version} · no account · no cloud</span>
         </div>
       </div>
     </>

@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { AlertTriangle, Check, Copy, Download as DownloadIcon, HardDrive, ShieldCheck } from 'lucide-react'
-import { PLATFORMS, RELEASE, SITE, type Platform } from '../config'
+import { PLATFORMS, type Platform } from '../config'
 import { detectPlatform } from '../lib/platform'
+import { useRelease } from '../lib/release'
 import { SectionHead } from '../components/ui'
 
 function OSMark({ id }: { id: Platform['id'] }) {
@@ -31,6 +32,7 @@ function OSMark({ id }: { id: Platform['id'] }) {
 
 export function Download() {
   const detected = useMemo(detectPlatform, [])
+  const release = useRelease()
   const [copied, setCopied] = useState<string | null>(null)
 
   useEffect(() => {
@@ -66,7 +68,7 @@ export function Download() {
           copy="One app, two platforms, no account. Install it, set a master password, and start moving secrets out of browsers and into a file you actually own."
           aside={
             <span className="mono">
-              v{SITE.version} · {SITE.released}
+              v{release.version} · {release.released}
             </span>
           }
         />
@@ -100,7 +102,7 @@ export function Download() {
                   <>
                     {mac ? (
                       <div className="dl__variants">
-                        {platform.variants?.map((variant) => (
+                        {[release.assets.macZip, release.assets.macDmg].map((variant) => (
                           <a key={variant.file} className="dl__btn" href={variant.file} download>
                             <span>
                               <DownloadIcon size={15} />
@@ -111,17 +113,17 @@ export function Download() {
                         ))}
                       </div>
                     ) : (
-                      <a className="btn btn--primary btn--lg dl__single" href={platform.file ?? '#'} download>
+                      <a className="btn btn--primary btn--lg dl__single" href={release.assets.windows.file} download>
                         <DownloadIcon size={17} />
                         Download for {platform.label}
-                        <span className="mono dl__size">{platform.size}</span>
+                        <span className="mono dl__size">{release.assets.windows.size}</span>
                       </a>
                     )}
 
                     <dl className="dl__meta mono">
                       <div>
                         <dt>Version</dt>
-                        <dd>{SITE.version}</dd>
+                        <dd>{release.version}</dd>
                       </div>
                       <div>
                         <dt>Signing</dt>
@@ -135,9 +137,9 @@ export function Download() {
 
                     <div className="dl__hash">
                       <span className="mono">SHA-256</span>
-                      {platform.variants ? (
+                      {mac ? (
                         <div className="dl__hashes">
-                          {platform.variants.map((variant) => (
+                          {[release.assets.macZip, release.assets.macDmg].map((variant) => (
                             <button
                               key={variant.file}
                               type="button"
@@ -154,10 +156,10 @@ export function Download() {
                         <button
                           type="button"
                           className="mono"
-                          onClick={() => copyHash(RELEASE.windows.sha256, 'windows')}
+                          onClick={() => copyHash(release.assets.windows.sha256, 'windows')}
                           title="Copy the Windows SHA-256"
                         >
-                          {RELEASE.windows.sha256.slice(0, 18)}…{RELEASE.windows.sha256.slice(-10)}
+                          {release.assets.windows.sha256.slice(0, 18)}…{release.assets.windows.sha256.slice(-10)}
                           {copied === 'windows' ? <Check size={10} /> : <Copy size={10} />}
                         </button>
                       )}
@@ -220,7 +222,7 @@ export function Download() {
             </div>
             <p>
               There is no code-signing certificate behind these packages — one costs real money and Aegis is free —
-              so each system will object exactly once. The checksums above are for v{SITE.version} as shipped.
+              so each system will object exactly once. The checksums above are for v{release.version} as shipped.
             </p>
             <details>
               <summary className="mono">How to open an unsigned build</summary>
@@ -247,9 +249,9 @@ export function Download() {
           </summary>
           <div className="dl__allrows">
             {[
-              { name: 'Aegis-Setup.exe', label: 'Windows x64', hash: RELEASE.windows.sha256 },
-              { name: 'Aegis-mac-universal.zip', label: 'macOS universal (.zip)', hash: RELEASE.macos.zip.sha256 },
-              { name: 'Aegis-mac-universal.dmg', label: 'macOS universal (.dmg)', hash: RELEASE.macos.dmg.sha256 },
+              { name: release.assets.windows.name, label: 'Windows x64', hash: release.assets.windows.sha256 },
+              { name: release.assets.macZip.name, label: 'macOS universal (.zip)', hash: release.assets.macZip.sha256 },
+              { name: release.assets.macDmg.name, label: 'macOS universal (.dmg)', hash: release.assets.macDmg.sha256 },
             ].map((row) => (
               <div key={row.name} className="dl__allrow">
                 <span className="mono">{row.label}</span>

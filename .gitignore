@@ -12,6 +12,8 @@ shots-site/
 .kombai/
 
 # web build artefacts
+.vercel/
+.env*.local
 website/dist/
 website/node_modules/
 website/public/downloads/

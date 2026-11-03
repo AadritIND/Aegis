@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { SITE } from '../config'
+import { useRelease } from '../lib/release'
 import { Logo } from './Logo'
 
 /* The cold start. A machined door, eight bolts, a wheel that answers to
@@ -83,6 +83,7 @@ function randomHex(length: number) {
 }
 
 export function Preloader({ onDone }: { onDone: () => void }) {
+  const { version } = useRelease()
   const [p, setP] = useState(0)
   const [open, setOpen] = useState(false)
   const [fast, setFast] = useState(false)
@@ -556,7 +557,7 @@ export function Preloader({ onDone }: { onDone: () => void }) {
               <span className="bootv__spec bootv__spec--r">
                 SN 01
                 <br />
-                {SITE.version}
+                {version}
               </span>
             </div>
             <span className="bootv__edge" />

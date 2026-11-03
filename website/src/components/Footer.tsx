@@ -1,11 +1,13 @@
 import { ArrowUp, Download } from 'lucide-react'
 import { PLATFORMS, RELEASE, SITE } from '../config'
 import { detectPlatform } from '../lib/platform'
+import { useRelease } from '../lib/release'
 import { scrollToTop } from '../lib/smooth'
 import { Logo } from './Logo'
 
 export function Footer() {
   const mac = detectPlatform() === 'macos'
+  const { version } = useRelease()
   const href = mac ? '#download' : (PLATFORMS.find((p) => p.id === 'windows')?.file ?? RELEASE.windows.file)
 
   return (
@@ -34,7 +36,7 @@ export function Footer() {
               {mac ? 'Get Aegis for macOS' : 'Download Aegis'}
             </a>
             <span className="mono">
-              v{SITE.version} · Windows + macOS · free forever
+              v{version} · Windows + macOS · free forever
             </span>
           </div>
         </div>

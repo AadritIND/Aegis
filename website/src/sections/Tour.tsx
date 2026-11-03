@@ -4,7 +4,7 @@ import { gsap, ScrollTrigger } from '../lib/gsap'
 import { scrollToY } from '../lib/smooth'
 import { useReducedMotion } from '../lib/useReducedMotion'
 import { SectionHead } from '../components/ui'
-import { SITE } from '../config'
+import { useRelease } from '../lib/release'
 
 const SHOTS = [
   {
@@ -58,6 +58,7 @@ export function Tour() {
   const [active, setActive] = useState(0)
   const [progress, setProgress] = useState(0)
   const reduced = useReducedMotion()
+  const { version } = useRelease()
 
   useLayoutEffect(() => {
     if (reduced) return
@@ -122,7 +123,7 @@ export function Tour() {
             </>
           }
           copy="Six real screens from the app, not renders. Scroll to walk through the parts that matter, from the morning dashboard to the audit that tells you what to fix."
-          aside={<span className="mono dim">Actual build · v{SITE.version}</span>}
+          aside={<span className="mono dim">Actual build · v{version}</span>}
         />
       </div>
 

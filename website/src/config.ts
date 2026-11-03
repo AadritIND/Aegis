@@ -1,6 +1,20 @@
 /* Single place to change anything the site links to or claims. */
 
-const LATEST_RELEASE = 'https://github.com/AadritIND/Aegis/releases/latest/download'
+const GITHUB_RELEASE = 'https://github.com/AadritIND/Aegis/releases/latest/download'
+
+// Production goes through the Vercel download gateway; the Vite-only dev
+// server falls back to GitHub because it does not run serverless functions.
+const DOWNLOADS = import.meta.env.PROD
+  ? {
+      windows: '/api/download?asset=windows',
+      macZip: '/api/download?asset=mac-zip',
+      macDmg: '/api/download?asset=mac-dmg',
+    }
+  : {
+      windows: `${GITHUB_RELEASE}/Aegis-Setup.exe`,
+      macZip: `${GITHUB_RELEASE}/Aegis-mac-universal.zip`,
+      macDmg: `${GITHUB_RELEASE}/Aegis-mac-universal.dmg`,
+    }
 
 export const SITE = {
   name: 'Aegis',
@@ -35,7 +49,7 @@ export const PLATFORMS: Platform[] = [
     id: 'windows',
     label: 'Windows',
     detail: 'Windows 10 / 11 · x64 installer',
-    file: `${LATEST_RELEASE}/Aegis-Setup.exe`,
+    file: `${DOWNLOADS.windows}`,
     size: '81 MB',
     status: 'ready',
   },
@@ -43,19 +57,19 @@ export const PLATFORMS: Platform[] = [
     id: 'macos',
     label: 'macOS',
     detail: 'macOS 11+ · universal (Apple silicon & Intel)',
-    file: `${LATEST_RELEASE}/Aegis-mac-universal.zip`,
+    file: `${DOWNLOADS.macZip}`,
     size: '171 / 177 MB',
     status: 'ready',
     variants: [
       {
         label: 'Universal .zip',
-        file: `${LATEST_RELEASE}/Aegis-mac-universal.zip`,
+        file: `${DOWNLOADS.macZip}`,
         size: '171 MB',
         sha256: 'dacc017de30ca542a3c0a98727785bece0ce51a11a71c5bfe4272c4970e5bb23',
       },
       {
         label: 'Universal .dmg',
-        file: `${LATEST_RELEASE}/Aegis-mac-universal.dmg`,
+        file: `${DOWNLOADS.macDmg}`,
         size: '177 MB',
         sha256: 'beb9019b4638148b1b514ac2fd946d6d118d1ed00164ac16be2018315c4ba1ad',
       },
@@ -112,18 +126,18 @@ export const FAQ = [
    a newer build. */
 export const RELEASE = {
   windows: {
-    file: `${LATEST_RELEASE}/Aegis-Setup.exe`,
+    file: `${DOWNLOADS.windows}`,
     size: '81 MB',
     sha256: '9817b61468695c751d4cc5a646042bc5bf870d324bd3f025294c3f509541bd5a',
   },
   macos: {
     zip: {
-      file: `${LATEST_RELEASE}/Aegis-mac-universal.zip`,
+      file: `${DOWNLOADS.macZip}`,
       size: '171 MB',
       sha256: 'dacc017de30ca542a3c0a98727785bece0ce51a11a71c5bfe4272c4970e5bb23',
     },
     dmg: {
-      file: `${LATEST_RELEASE}/Aegis-mac-universal.dmg`,
+      file: `${DOWNLOADS.macDmg}`,
       size: '177 MB',
       sha256: 'beb9019b4638148b1b514ac2fd946d6d118d1ed00164ac16be2018315c4ba1ad',
     },
