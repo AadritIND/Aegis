@@ -71,10 +71,17 @@ export default {
     if (request.method === 'GET' && !range) {
       const cached = await cache.match(cacheKey)
       if (cached) {
-        const headers = new Headers(cached.headers)
-        headers.set('Cache-Control', cacheHeaders(tag))
-        headers.set('X-Aegis-Cache', 'HIT')
-        return new Response(cached.body, { status: 200, headers })
+        const cachedAt = Number(cached.headers.get('X-Aegis-Cached-At'))
+        const fresh =
+          tag !== 'latest' ||
+          (Number.isFinite(cachedAt) && Date.now() - cachedAt < LATEST_SECONDS * 1000)
+        if (fresh) {
+          const headers = new Headers(cached.headers)
+          headers.set('Cache-Control', cacheHeaders(tag))
+          headers.set('X-Aegis-Cache', 'HIT')
+          return new Response(cached.body, { status: 200, headers })
+        }
+        ctx.waitUntil(cache.delete(cacheKey))
       }
     }
 
@@ -102,6 +109,7 @@ export default {
     headers.set('Access-Control-Allow-Origin', '*')
     headers.set('Cache-Control', cacheHeaders(tag))
     headers.set('X-Aegis-Cache', 'MISS')
+    headers.set('X-Aegis-Cached-At', String(Date.now()))
     headers.delete('Set-Cookie')
     headers.delete('Content-Security-Policy')
     headers.delete('X-Frame-Options')
