@@ -1,8 +1,8 @@
 name: Release Aegis
 
-# Every push to main ships a new build so installed copies can update.
-# The patch number comes from the Actions run number, so it always moves
-# forward without anyone editing package.json by hand.
+# Every push that changes the desktop app ships a new build so installed
+# copies can update. The patch number comes from the Actions run number, so
+# it always moves forward without anyone editing package.json by hand.
 on:
   push:
     branches: [main]
