@@ -27,13 +27,6 @@ export const SITE = {
   support: 'https://github.com/AadritIND/Aegis/issues',
 }
 
-export type ReleaseArtifact = {
-  label: string
-  file: string
-  size: string
-  sha256: string
-}
-
 export type Platform = {
   id: 'windows' | 'macos' | 'linux'
   label: string
@@ -41,8 +34,6 @@ export type Platform = {
   file: string | null
   size: string
   status: 'ready' | 'building'
-  /** platforms whose build ships more than one artifact */
-  variants?: ReleaseArtifact[]
 }
 
 export const PLATFORMS: Platform[] = [
@@ -61,20 +52,6 @@ export const PLATFORMS: Platform[] = [
     file: `${DOWNLOADS.macZip}`,
     size: '171 / 177 MB',
     status: 'ready',
-    variants: [
-      {
-        label: 'Universal .zip',
-        file: `${DOWNLOADS.macZip}`,
-        size: '171 MB',
-        sha256: 'dacc017de30ca542a3c0a98727785bece0ce51a11a71c5bfe4272c4970e5bb23',
-      },
-      {
-        label: 'Universal .dmg',
-        file: `${DOWNLOADS.macDmg}`,
-        size: '177 MB',
-        sha256: 'beb9019b4638148b1b514ac2fd946d6d118d1ed00164ac16be2018315c4ba1ad',
-      },
-    ],
   },
   {
     id: 'linux',
@@ -124,23 +101,21 @@ export const FAQ = [
 /* The installers live on the GitHub release, not in this repository, so the
    buttons always serve the same build electron-updater offers. These values
    are only the offline fallback: the page replaces them with the latest
-   release metadata from /api/release as soon as the backend responds. */
+   release metadata from /api/release as soon as the backend responds, and
+   checksums are shown only for that live metadata. */
 export const RELEASE = {
   windows: {
     file: `${DOWNLOADS.windows}`,
     size: '81 MB',
-    sha256: '9817b61468695c751d4cc5a646042bc5bf870d324bd3f025294c3f509541bd5a',
   },
   macos: {
     zip: {
       file: `${DOWNLOADS.macZip}`,
       size: '171 MB',
-      sha256: 'dacc017de30ca542a3c0a98727785bece0ce51a11a71c5bfe4272c4970e5bb23',
     },
     dmg: {
       file: `${DOWNLOADS.macDmg}`,
       size: '177 MB',
-      sha256: 'beb9019b4638148b1b514ac2fd946d6d118d1ed00164ac16be2018315c4ba1ad',
     },
   },
 }

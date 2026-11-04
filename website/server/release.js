@@ -9,21 +9,18 @@ export const ASSETS = {
     label: 'Windows x64',
     query: 'windows',
     bytes: 85251193,
-    sha256: '9817b61468695c751d4cc5a646042bc5bf870d324bd3f025294c3f509541bd5a',
   },
   macZip: {
     name: 'Aegis-mac-universal.zip',
     label: 'Universal .zip',
     query: 'mac-zip',
     bytes: 178824395,
-    sha256: 'dacc017de30ca542a3c0a98727785bece0ce51a11a71c5bfe4272c4970e5bb23',
   },
   macDmg: {
     name: 'Aegis-mac-universal.dmg',
     label: 'Universal .dmg',
     query: 'mac-dmg',
     bytes: 185262689,
-    sha256: 'beb9019b4638148b1b514ac2fd946d6d118d1ed00164ac16be2018315c4ba1ad',
   },
 }
 
@@ -58,7 +55,7 @@ function fallbackAsset(key) {
     file: `/api/download?asset=${asset.query}`,
     size: formatSize(asset.bytes),
     bytes: asset.bytes,
-    sha256: asset.sha256,
+    sha256: '',
   }
 }
 

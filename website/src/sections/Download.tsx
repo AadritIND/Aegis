@@ -267,12 +267,14 @@ export function Download() {
               <div key={row.name} className="dl__allrow">
                 <span className="mono">{row.label}</span>
                 <code>{row.name}</code>
-                <code className="dl__allhash">{row.hash || 'unavailable offline'}</code>
+                <code className="dl__allhash">
+                  {release.source === 'github' && row.hash ? row.hash : 'unavailable offline'}
+                </code>
                 <button
                   type="button"
                   onClick={() => copyHash(row.hash, row.name)}
                   aria-label={`Copy hash for ${row.name}`}
-                  disabled={!row.hash}
+                  disabled={release.source !== 'github' || !row.hash}
                 >
                   {copied === row.name ? <Check size={12} /> : <Copy size={12} />}
                 </button>
