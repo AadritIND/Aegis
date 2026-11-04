@@ -151,8 +151,9 @@ The site is live at **https://aegissvault.vercel.app/**. The download buttons ca
 (`/api/download?asset=windows|mac-zip|mac-dmg`), which resolves the latest GitHub release on the server and
 redirects to the matching installer. The binaries stay on GitHub Releases because Vercel functions have a
 response-size limit; the backend gives the site stable same-origin URLs without duplicating 300 MB of
-installers. The version, sizes and SHA-256 values in `website/src/config.ts` are the fallback when the API is
-unavailable; the page refreshes them from `/api/release` when the backend responds.
+installers. The version and sizes in `website/src/config.ts` are the offline fallback; the page replaces
+them with `/api/release` metadata and only shows SHA-256 checksums when the live release data is available.
+The download buttons always resolve to the latest published GitHub release.
 
 The Vercel project is connected to this repository, so every push to `main` deploys the site automatically.
 When the release workflow publishes a newer build, `/api/release` and `/api/download` pick it up without a
@@ -163,18 +164,12 @@ site redeploy — the download buttons always point at the newest published GitH
 The Vercel project (`aegissvault`) uses `website/` as its root, builds with `npm run build`, and publishes
 `dist`. Its two serverless functions live in `website/api`: `GET /api/release` returns the latest release
 metadata and `GET /api/download?asset=...` redirects whitelisted installer requests. The project is linked to
-`AadritIND/Aegis`, so normal Git pushes deploy it. To deploy manually:
-
-```bash
-cd website
-vercel link        # first time on a new machine; choose aegissvault
-vercel deploy --prod
-```
+`AadritIND/Aegis`, so normal Git pushes deploy it. To rebuild the latest production deployment manually, use
+**Redeploy** in the Vercel dashboard.
 
 Set an optional `GITHUB_TOKEN` environment variable in the Vercel project to raise the GitHub API rate limit;
 public releases work without it. `website/.vercelignore` keeps the local `public/downloads/` archive and local
-env files out of deployments. Run `vercel git connect` from `website/` if you want Vercel to deploy on Git
-pushes instead of using the CLI.
+env files out of deployments.
 
 `npm run dev` serves the Vite UI only and links directly to GitHub; run `vercel dev` from `website/` when you
 want to exercise the API routes locally.
