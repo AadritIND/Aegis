@@ -13,6 +13,7 @@ shots-site/
 
 # web build artefacts
 .vercel/
+.wrangler/
 .env*.local
 website/dist/
 website/node_modules/

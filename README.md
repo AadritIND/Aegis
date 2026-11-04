@@ -147,17 +147,36 @@ npm run preview    # serve the built output on :5311
 Everything editable about the site's claims and links lives in [`website/src/config.ts`](website/src/config.ts) —
 version, platform list, FAQ copy, repository links, and the installer's size and SHA-256.
 
-The site is live at **https://aegissvault.vercel.app/**. The download buttons call the site's own backend
-(`/api/download?asset=windows|mac-zip|mac-dmg`), which resolves the latest GitHub release on the server and
-redirects to the matching installer. The binaries stay on GitHub Releases because Vercel functions have a
-response-size limit; the backend gives the site stable same-origin URLs without duplicating 300 MB of
-installers. The version and sizes in `website/src/config.ts` are the offline fallback; the page replaces
-them with `/api/release` metadata and only shows SHA-256 checksums when the live release data is available.
-The download buttons always resolve to the latest published GitHub release.
+The site is live at **https://aegissvault.vercel.app/**. The download buttons point at the Cloudflare Worker
+in [`cloudflare/`](cloudflare), which proxies and caches the installers at Cloudflare's edge
+(`https://aegis-downloads.aadritchandravanci23.workers.dev/dl/<tag>/<asset>`). GitHub Releases remains the
+source of truth; the Worker fetches the current release asset and serves it from the nearest edge, with a
+five-minute cache for `latest` URLs and immutable caching for versioned URLs. This keeps downloads fast
+globally without storing 300+ MB in Vercel or duplicating the binaries.
+
+`/api/release` returns the live version, sizes, SHA-256 checksums and versioned Worker URLs. The version and
+sizes in `website/src/config.ts` are the offline fallback; checksums are only shown when live release metadata
+is available. `/api/download?asset=...` remains as a compatibility redirect.
 
 The Vercel project is connected to this repository, so every push to `main` deploys the site automatically.
-When the release workflow publishes a newer build, `/api/release` and `/api/download` pick it up without a
-site redeploy — the download buttons always point at the newest published GitHub release.
+When the release workflow publishes a newer build, `/api/release` picks up the new tag and the Worker starts
+serving the new versioned URLs immediately — no site redeploy needed.
+
+### Deploy the download Worker
+
+The Worker lives in `cloudflare/` and only needs to be redeployed when its code changes; new app releases are
+picked up automatically.
+
+```bash
+cd cloudflare
+npm install
+npx wrangler login   # one-time
+npx wrangler deploy
+```
+
+The Worker hostname is referenced by `website/server/release.js` and `website/src/config.ts`. To use a
+different Worker hostname, set `DOWNLOAD_BASE` in the Vercel project and update the fallback constant in
+`website/src/config.ts`.
 
 ### Deploy the site
 
@@ -171,8 +190,8 @@ Set an optional `GITHUB_TOKEN` environment variable in the Vercel project to rai
 public releases work without it. `website/.vercelignore` keeps the local `public/downloads/` archive and local
 env files out of deployments.
 
-`npm run dev` serves the Vite UI only and links directly to GitHub; run `vercel dev` from `website/` when you
-want to exercise the API routes locally.
+`npm run dev` serves the Vite UI with the Worker's `latest` download URLs; run `vercel dev` from `website/`
+when you want to exercise the API routes locally.
 
 Site visuals can be re-captured for review with:
 

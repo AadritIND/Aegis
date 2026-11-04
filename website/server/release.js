@@ -1,6 +1,8 @@
 const REPO = 'AadritIND/Aegis'
 const RELEASE_API = `https://api.github.com/repos/${REPO}/releases/latest`
-const LATEST_DOWNLOAD = `https://github.com/${REPO}/releases/latest/download`
+const DOWNLOAD_BASE = (
+  process.env.DOWNLOAD_BASE || 'https://aegis-downloads.aadritchandravanci23.workers.dev'
+).replace(/\/+$/, '')
 const CACHE_TTL_MS = 5 * 60 * 1000
 
 export const ASSETS = {
@@ -46,13 +48,17 @@ function formatReleased(value) {
   }).format(date)
 }
 
+function downloadUrl(tag, query) {
+  return `${DOWNLOAD_BASE}/dl/${tag}/${query}`
+}
+
 function fallbackAsset(key) {
   const asset = ASSETS[key]
   return {
     key,
     name: asset.name,
     label: asset.label,
-    file: `/api/download?asset=${asset.query}`,
+    file: downloadUrl('latest', asset.query),
     size: formatSize(asset.bytes),
     bytes: asset.bytes,
     sha256: '',
@@ -74,8 +80,11 @@ export function fallbackRelease() {
 }
 
 function normalize(release) {
+  const tag = String(release.tag_name || '')
+  const version = tag.replace(/^v/, '')
+  if (!version) throw new Error('GitHub release has no version tag')
+
   const assets = {}
-  const urls = {}
 
   for (const [key, asset] of Object.entries(ASSETS)) {
     const found = Array.isArray(release.assets)
@@ -88,21 +97,16 @@ function normalize(release) {
       key,
       name: asset.name,
       label: asset.label,
-      file: `/api/download?asset=${asset.query}`,
+      file: downloadUrl(tag, asset.query),
       size: Number.isFinite(bytes) ? formatSize(bytes) : '',
       bytes: Number.isFinite(bytes) ? bytes : null,
       sha256: typeof found.digest === 'string' ? found.digest.replace(/^sha256:/, '') : '',
     }
-    urls[key] = found.browser_download_url
   }
 
   if (Object.keys(assets).length !== Object.keys(ASSETS).length) {
     throw new Error('GitHub release is missing one or more installer assets')
   }
-
-  const tag = String(release.tag_name || '')
-  const version = tag.replace(/^v/, '')
-  if (!version) throw new Error('GitHub release has no version tag')
 
   return {
     release: {
@@ -112,7 +116,6 @@ function normalize(release) {
       source: 'github',
       assets,
     },
-    urls,
   }
 }
 
@@ -145,11 +148,12 @@ export async function getDownloadTarget(query) {
   if (!key) return null
 
   try {
-    const { urls } = await getLatestRelease()
-    if (urls[key]) return urls[key]
+    const { release } = await getLatestRelease()
+    const asset = release.assets[key]
+    if (asset?.file) return asset.file
   } catch {
-    // Fall back to GitHub's stable `latest` redirect below.
+    // Fall back to the Worker's `latest` route below.
   }
 
-  return `${LATEST_DOWNLOAD}/${ASSETS[key].name}`
+  return downloadUrl('latest', ASSETS[key].query)
 }

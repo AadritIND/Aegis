@@ -1,20 +1,16 @@
 /* Single place to change anything the site links to or claims. */
 
-const GITHUB_RELEASE = 'https://github.com/AadritIND/Aegis/releases/latest/download'
+const DOWNLOAD_BASE = 'https://aegis-downloads.aadritchandravanci23.workers.dev'
 
-// Production goes through the Vercel download gateway; the Vite-only dev
-// server falls back to GitHub because it does not run serverless functions.
-const DOWNLOADS = import.meta.env.PROD
-  ? {
-      windows: '/api/download?asset=windows',
-      macZip: '/api/download?asset=mac-zip',
-      macDmg: '/api/download?asset=mac-dmg',
-    }
-  : {
-      windows: `${GITHUB_RELEASE}/Aegis-Setup.exe`,
-      macZip: `${GITHUB_RELEASE}/Aegis-mac-universal.zip`,
-      macDmg: `${GITHUB_RELEASE}/Aegis-mac-universal.dmg`,
-    }
+// Installer traffic goes through the Cloudflare Worker so every download is
+// served from the nearest edge cache instead of GitHub's release host. The
+// versioned URLs returned by /api/release are used whenever the API is live;
+// these `latest` URLs are the offline fallback.
+const DOWNLOADS = {
+  windows: `${DOWNLOAD_BASE}/dl/latest/windows`,
+  macZip: `${DOWNLOAD_BASE}/dl/latest/mac-zip`,
+  macDmg: `${DOWNLOAD_BASE}/dl/latest/mac-dmg`,
+}
 
 export const SITE = {
   name: 'Aegis',
@@ -98,11 +94,11 @@ export const FAQ = [
   },
 ]
 
-/* The installers live on the GitHub release, not in this repository, so the
-   buttons always serve the same build electron-updater offers. These values
-   are only the offline fallback: the page replaces them with the latest
-   release metadata from /api/release as soon as the backend responds, and
-   checksums are shown only for that live metadata. */
+/* The installers live on the GitHub release, not in this repository, and are
+   cached at Cloudflare's edge by the download Worker. These values are only
+   the offline fallback: the page replaces them with the latest release
+   metadata from /api/release as soon as the backend responds, and checksums
+   are shown only for that live metadata. */
 export const RELEASE = {
   windows: {
     file: `${DOWNLOADS.windows}`,
