@@ -13,7 +13,7 @@ export function Hero({ booted, tint }: { booted: boolean; tint: string }) {
   const reduced = useReducedMotion()
   const detected = detectPlatform()
   const mac = detectPlatform() === 'macos'
-  const { version } = useRelease()
+  const release = useRelease()
 
   const windows = PLATFORMS.find((platform) => platform.id === 'windows')
   const installHref = mac ? '#download' : (windows?.file ?? RELEASE.windows.file)
@@ -77,7 +77,7 @@ export function Hero({ booted, tint }: { booted: boolean; tint: string }) {
         LOCAL VOLUME · 1 FILE
       </div>
       <div className="hero__side hero__side--right mono" aria-hidden="true">
-        {version} — NOV 2026
+        {release.version} — {release.released}
       </div>
 
       <div className="container hero__inner">
@@ -133,10 +133,10 @@ export function Hero({ booted, tint }: { booted: boolean; tint: string }) {
           </div>
 
           <div className="hero__meta">
-            <span className="mono">v{version}</span>
+            <span className="mono">v{release.version}</span>
             <span className="mono">free forever</span>
             <span className="mono">
-              {detected === 'macos' ? 'universal build' : '81 MB installer'}
+              {detected === 'macos' ? 'universal build' : `${release.assets.windows.size} installer`}
             </span>
           </div>
         </div>

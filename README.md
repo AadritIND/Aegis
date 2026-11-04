@@ -147,22 +147,27 @@ npm run preview    # serve the built output on :5311
 Everything editable about the site's claims and links lives in [`website/src/config.ts`](website/src/config.ts) —
 version, platform list, FAQ copy, repository links, and the installer's size and SHA-256.
 
-The site is live at **https://aegis-desktop.vercel.app**. The download buttons call the site's own backend
+The site is live at **https://aegissvault.vercel.app/**. The download buttons call the site's own backend
 (`/api/download?asset=windows|mac-zip|mac-dmg`), which resolves the latest GitHub release on the server and
 redirects to the matching installer. The binaries stay on GitHub Releases because Vercel functions have a
 response-size limit; the backend gives the site stable same-origin URLs without duplicating 300 MB of
 installers. The version, sizes and SHA-256 values in `website/src/config.ts` are the fallback when the API is
 unavailable; the page refreshes them from `/api/release` when the backend responds.
 
+The Vercel project is connected to this repository, so every push to `main` deploys the site automatically.
+When the release workflow publishes a newer build, `/api/release` and `/api/download` pick it up without a
+site redeploy — the download buttons always point at the newest published GitHub release.
+
 ### Deploy the site
 
-The Vercel project uses `website/` as its root, builds with `npm run build`, and publishes `dist`. Its two
-serverless functions live in `website/api`: `GET /api/release` returns the latest release metadata and
-`GET /api/download?asset=...` redirects whitelisted installer requests. Deploy from the site directory:
+The Vercel project (`aegissvault`) uses `website/` as its root, builds with `npm run build`, and publishes
+`dist`. Its two serverless functions live in `website/api`: `GET /api/release` returns the latest release
+metadata and `GET /api/download?asset=...` redirects whitelisted installer requests. The project is linked to
+`AadritIND/Aegis`, so normal Git pushes deploy it. To deploy manually:
 
 ```bash
 cd website
-vercel link        # first time on a new machine; choose aegis-desktop
+vercel link        # first time on a new machine; choose aegissvault
 vercel deploy --prod
 ```
 

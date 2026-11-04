@@ -30,6 +30,7 @@ export function Nav({ tint, onTint }: { tint: string; onTint: (tint: string) => 
   const nav = useRef<HTMLElement>(null)
   const mac = detectPlatform() === 'macos'
   const { version } = useRelease()
+  const shortVersion = version.split('.').slice(0, 2).join('.')
   const href = mac ? '#download' : (PLATFORMS.find((p) => p.id === 'windows')?.file ?? RELEASE.windows.file)
 
   useEffect(() => {
@@ -94,7 +95,7 @@ export function Nav({ tint, onTint }: { tint: string; onTint: (tint: string) => 
           <a href="#top" className="nav__brand" aria-label="Aegis home">
             <Logo size={24} className="nav__logo" />
             <span>Aegis</span>
-            <em className="nav__ver">1.0</em>
+            <em className="nav__ver">{shortVersion}</em>
           </a>
 
           <nav className="nav__links" aria-label="Sections">

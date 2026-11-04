@@ -36,7 +36,7 @@ const FALLBACK: LatestRelease = {
       file: RELEASE.windows.file,
       size: RELEASE.windows.size,
       bytes: 85251193,
-      sha256: RELEASE.windows.sha256,
+      sha256: '',
     },
     macZip: {
       key: 'macZip',
@@ -45,7 +45,7 @@ const FALLBACK: LatestRelease = {
       file: RELEASE.macos.zip.file,
       size: RELEASE.macos.zip.size,
       bytes: 178824395,
-      sha256: RELEASE.macos.zip.sha256,
+      sha256: '',
     },
     macDmg: {
       key: 'macDmg',
@@ -54,7 +54,7 @@ const FALLBACK: LatestRelease = {
       file: RELEASE.macos.dmg.file,
       size: RELEASE.macos.dmg.size,
       bytes: 185262689,
-      sha256: RELEASE.macos.dmg.sha256,
+      sha256: '',
     },
   },
 }
@@ -87,7 +87,6 @@ export function ReleaseProvider({ children }: { children: ReactNode }) {
   const [release, setRelease] = useState<LatestRelease>(FALLBACK)
 
   useEffect(() => {
-    if (!import.meta.env.PROD) return
     let live = true
 
     fetch('/api/release', { headers: { Accept: 'application/json' } })

@@ -6,6 +6,18 @@ name: Release Aegis
 on:
   push:
     branches: [main]
+    # Only rebuild installers when the desktop app itself changes. Website and
+    # docs pushes deploy through Vercel and keep serving the current release.
+    paths:
+      - 'electron/**'
+      - 'src/**'
+      - 'build/**'
+      - 'scripts/**'
+      - 'index.html'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vite.config.ts'
+      - 'tsconfig.json'
   workflow_dispatch:
 
 permissions:

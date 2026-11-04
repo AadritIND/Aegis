@@ -138,21 +138,27 @@ export function Download() {
                     <div className="dl__hash">
                       <span className="mono">SHA-256</span>
                       {mac ? (
-                        <div className="dl__hashes">
-                          {[release.assets.macZip, release.assets.macDmg].map((variant) => (
-                            <button
-                              key={variant.file}
-                              type="button"
-                              className="mono"
-                              onClick={() => copyHash(variant.sha256, variant.label)}
-                              title={`Copy the SHA-256 for ${variant.label}`}
-                            >
-                              {variant.label}: {variant.sha256.slice(0, 10)}…{variant.sha256.slice(-6)}
-                              {copied === variant.label ? <Check size={10} /> : <Copy size={10} />}
-                            </button>
-                          ))}
-                        </div>
-                      ) : (
+                        release.source === 'github' &&
+                        release.assets.macZip.sha256 &&
+                        release.assets.macDmg.sha256 ? (
+                          <div className="dl__hashes">
+                            {[release.assets.macZip, release.assets.macDmg].map((variant) => (
+                              <button
+                                key={variant.file}
+                                type="button"
+                                className="mono"
+                                onClick={() => copyHash(variant.sha256, variant.label)}
+                                title={`Copy the SHA-256 for ${variant.label}`}
+                              >
+                                {variant.label}: {variant.sha256.slice(0, 10)}…{variant.sha256.slice(-6)}
+                                {copied === variant.label ? <Check size={10} /> : <Copy size={10} />}
+                              </button>
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="mono dim">available when online</span>
+                        )
+                      ) : release.source === 'github' && release.assets.windows.sha256 ? (
                         <button
                           type="button"
                           className="mono"
@@ -162,6 +168,8 @@ export function Download() {
                           {release.assets.windows.sha256.slice(0, 18)}…{release.assets.windows.sha256.slice(-10)}
                           {copied === 'windows' ? <Check size={10} /> : <Copy size={10} />}
                         </button>
+                      ) : (
+                        <span className="mono dim">available when online</span>
                       )}
                     </div>
                   </>
@@ -222,7 +230,10 @@ export function Download() {
             </div>
             <p>
               There is no code-signing certificate behind these packages — one costs real money and Aegis is free —
-              so each system will object exactly once. The checksums above are for v{release.version} as shipped.
+              so each system will object exactly once.{' '}
+              {release.source === 'github'
+                ? `The checksums above are for v${release.version} as shipped.`
+                : 'Checksums are unavailable while the release service is offline; the download buttons still resolve to the latest published build.'}
             </p>
             <details>
               <summary className="mono">How to open an unsigned build</summary>
@@ -256,8 +267,13 @@ export function Download() {
               <div key={row.name} className="dl__allrow">
                 <span className="mono">{row.label}</span>
                 <code>{row.name}</code>
-                <code className="dl__allhash">{row.hash}</code>
-                <button type="button" onClick={() => copyHash(row.hash, row.name)} aria-label={`Copy hash for ${row.name}`}>
+                <code className="dl__allhash">{row.hash || 'unavailable offline'}</code>
+                <button
+                  type="button"
+                  onClick={() => copyHash(row.hash, row.name)}
+                  aria-label={`Copy hash for ${row.name}`}
+                  disabled={!row.hash}
+                >
                   {copied === row.name ? <Check size={12} /> : <Copy size={12} />}
                 </button>
               </div>

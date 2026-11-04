@@ -19,6 +19,7 @@ const DOWNLOADS = import.meta.env.PROD
 export const SITE = {
   name: 'Aegis',
   tagline: 'The quiet vault for everything private.',
+  url: 'https://aegissvault.vercel.app',
   version: '1.0.3',
   released: 'November 2026',
   // Repository / support links.
@@ -121,9 +122,9 @@ export const FAQ = [
 ]
 
 /* The installers live on the GitHub release, not in this repository, so the
-   buttons always serve the same build electron-updater offers. Version and
-   digests below describe v1.0.3; refresh them when the site copy should name
-   a newer build. */
+   buttons always serve the same build electron-updater offers. These values
+   are only the offline fallback: the page replaces them with the latest
+   release metadata from /api/release as soon as the backend responds. */
 export const RELEASE = {
   windows: {
     file: `${DOWNLOADS.windows}`,
