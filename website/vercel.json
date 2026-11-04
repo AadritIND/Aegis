@@ -3,6 +3,20 @@
   "framework": "vite",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
+  "rewrites": [
+    {
+      "source": "/dl/windows",
+      "destination": "https://github.com/AadritIND/Aegis/releases/latest/download/Aegis-Setup.exe"
+    },
+    {
+      "source": "/dl/mac-zip",
+      "destination": "https://github.com/AadritIND/Aegis/releases/latest/download/Aegis-mac-universal.zip"
+    },
+    {
+      "source": "/dl/mac-dmg",
+      "destination": "https://github.com/AadritIND/Aegis/releases/latest/download/Aegis-mac-universal.dmg"
+    }
+  ],
   "headers": [
     {
       "source": "/assets/(.*)",
