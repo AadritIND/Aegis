@@ -61,8 +61,13 @@ export default {
         : `https://github.com/${repo}/releases/download/${tag}/${assetName}`
 
     const cache = caches.default
+    const sha = url.searchParams.get('sha')
+    const digestKey =
+      tag !== 'latest' && sha && /^[a-f0-9]{64}$/i.test(sha)
+        ? `?sha=${sha.toLowerCase()}`
+        : ''
     const cacheKey = new Request(
-      `https://aegis-downloads.internal/dl/${tag}/${assetKey}`,
+      `https://aegis-downloads.internal/dl/${tag}/${assetKey}${digestKey}`,
       { method: 'GET' },
     )
     const range = request.headers.get('Range')

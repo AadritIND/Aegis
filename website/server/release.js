@@ -93,14 +93,18 @@ function normalize(release) {
     if (!found || typeof found.browser_download_url !== 'string') continue
 
     const bytes = Number(found.size)
+    const sha256 =
+      typeof found.digest === 'string' ? found.digest.replace(/^sha256:/, '') : ''
     assets[key] = {
       key,
       name: asset.name,
       label: asset.label,
-      file: downloadUrl(tag, asset.query),
+      // The digest is part of the URL so a re-uploaded asset under the same
+      // tag gets a fresh edge-cache entry instead of a stale installer.
+      file: `${downloadUrl(tag, asset.query)}${sha256 ? `?sha=${sha256}` : ''}`,
       size: Number.isFinite(bytes) ? formatSize(bytes) : '',
       bytes: Number.isFinite(bytes) ? bytes : null,
-      sha256: typeof found.digest === 'string' ? found.digest.replace(/^sha256:/, '') : '',
+      sha256,
     }
   }
 
