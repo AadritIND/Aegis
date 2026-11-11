@@ -1,7 +1,7 @@
 {
   "name": "aegis-vault",
   "productName": "Aegis",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Aegis — a liquid-glass desktop vault for passwords, API keys and secrets.",
   "private": true,
   "main": "electron/main.cjs",
@@ -57,6 +57,13 @@
       "dist/**/*",
       "electron/**/*",
       "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "extension",
+        "to": "extension",
+        "filter": ["**/*"]
+      }
     ],
     "publish": {
       "provider": "github",

@@ -1,0 +1,48 @@
+body.options-page {
+  width: auto;
+  min-height: 100vh;
+  background:
+    radial-gradient(50% 50% at 100% 0%, rgba(159, 245, 210, 0.09), transparent 65%),
+    var(--bg);
+}
+
+.options {
+  width: min(680px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 52px 0 34px;
+}
+
+.options__head { display: flex; align-items: center; gap: 14px; margin-bottom: 30px; }
+.options__head .mark { width: 48px; height: 48px; border-radius: 15px; }
+.options__head .mark svg { width: 30px; height: 30px; }
+.options__head h1 { margin: 7px 0 0; font-size: 32px; letter-spacing: -0.055em; }
+.kicker { font: 8px/1 var(--mono); letter-spacing: 0.18em; color: var(--mint); text-transform: uppercase; }
+
+.card {
+  margin-bottom: 12px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.022);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+}
+.card__head { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+.card__head > span:first-child { display: flex; flex-direction: column; gap: 4px; }
+.card__head b { font-size: 13px; font-weight: 550; }
+.card__head small { color: var(--muted); font-size: 10px; line-height: 1.5; }
+.actions { display: flex; gap: 8px; margin-top: 16px; }
+.primary, .outline {
+  height: 34px;
+  padding: 0 13px;
+  border-radius: 9px;
+  font-size: 10px;
+  cursor: pointer;
+}
+.primary { border: 1px solid rgba(255, 255, 255, 0.45); background: var(--mint); color: #07100c; font-weight: 650; }
+.outline { border: 1px solid var(--line-strong); background: transparent; color: var(--text-2); }
+.outline:hover { border-color: var(--mint); color: var(--mint); }
+.note { margin: 15px 0 0; padding-top: 13px; border-top: 1px solid var(--line); color: var(--muted); font-size: 10px; line-height: 1.65; }
+.list { display: flex; flex-direction: column; gap: 9px; margin: 16px 0 0; padding: 0; list-style: none; }
+.list li { display: flex; gap: 9px; color: var(--muted); font-size: 10.5px; line-height: 1.55; }
+.list b { color: var(--mint); font: 8px/1.7 var(--mono); }
+.options__foot { display: flex; justify-content: space-between; gap: 16px; margin-top: 22px; padding-top: 14px; border-top: 1px solid var(--line); color: rgba(238, 248, 243, 0.3); font: 8px/1.4 var(--mono); }

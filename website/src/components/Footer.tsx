@@ -58,6 +58,7 @@ export function Footer() {
             <h4>Product</h4>
             <a href="#product">Overview</a>
             <a href="#tour">Tour</a>
+            <a href="#extension">Browser extension</a>
             <a href="#forge">Password forge</a>
             <a href="#download">Download</a>
           </div>

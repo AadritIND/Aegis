@@ -9,11 +9,12 @@ import { Logo } from './Logo'
 const LINKS = [
   { id: 'product', label: 'Product', n: '01' },
   { id: 'tour', label: 'Tour', n: '02' },
-  { id: 'security', label: 'Security', n: '03' },
-  { id: 'anatomy', label: 'Anatomy', n: '04' },
-  { id: 'forge', label: 'Forge', n: '05' },
-  { id: 'download', label: 'Download', n: '06' },
-  { id: 'faq', label: 'FAQ', n: '07' },
+  { id: 'extension', label: 'Extension', n: '03' },
+  { id: 'security', label: 'Security', n: '04' },
+  { id: 'anatomy', label: 'Anatomy', n: '05' },
+  { id: 'forge', label: 'Forge', n: '06' },
+  { id: 'download', label: 'Download', n: '07' },
+  { id: 'faq', label: 'FAQ', n: '08' },
 ]
 
 const TINTS = [

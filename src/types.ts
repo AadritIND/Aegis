@@ -112,6 +112,24 @@ export interface UpdateState {
   bytesPerSecond?: number
 }
 
+export interface BrowserPairingInfo {
+  id: string
+  name: string
+  createdAt: number
+  lastSeenAt: number | null
+}
+
+export interface ExtensionInfo {
+  running: boolean
+  port: number
+  locked: boolean
+  code: string | null
+  codeExpiresAt: number | null
+  browsers: BrowserPairingInfo[]
+  error: string
+  installPath: string
+}
+
 export interface VaultBridge {
   isElectron: boolean
   appInfo(): Promise<AppInfo>
@@ -137,7 +155,12 @@ export interface VaultBridge {
   updaterCheck(): Promise<UpdateState>
   updaterDownload(): Promise<UpdateState>
   updaterInstall(): Promise<{ ok: boolean; reason?: string }>
+  extensionInfo(): Promise<ExtensionInfo>
+  extensionNewCode(): Promise<ExtensionInfo>
+  extensionRevoke(id: string): Promise<ExtensionInfo>
+  extensionInstall(): Promise<{ path: string }>
   onLocked(cb: (payload: { reason: string }) => void): () => void
+  onVaultData(cb: (data: VaultData) => void): () => void
   onPalette(cb: () => void): () => void
   onWindowState(cb: (state: { maximized: boolean; focused: boolean }) => void): () => void
   onUpdaterState(cb: (state: UpdateState) => void): () => void

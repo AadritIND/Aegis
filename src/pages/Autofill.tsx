@@ -8,6 +8,7 @@ import {
   Loader2,
   LockKeyhole,
   MousePointerClick,
+  Puzzle,
   ShieldCheck,
   Sparkles,
   Zap,
@@ -165,6 +166,23 @@ export function AutofillPage() {
     }
   }
 
+  const prepareExtension = async () => {
+    try {
+      const result = await window.vault.extensionInstall()
+      addToast({
+        title: 'Extension prepared',
+        detail: `Load the unpacked folder from ${result.path}.`,
+        tone: 'success',
+      })
+    } catch {
+      addToast({
+        title: 'Desktop app only',
+        detail: 'Open the installed Aegis app to prepare the browser extension.',
+        tone: 'info',
+      })
+    }
+  }
+
   const copyField = (item: VaultItem, key: 'username' | 'password') => {
     const value = item.fields[key]
     if (!value) return
@@ -192,6 +210,9 @@ export function AutofillPage() {
           </p>
         </div>
         <div className="page-actions">
+          <button type="button" className="btn btn-outline btn-sm" onClick={() => void prepareExtension()}>
+            <Puzzle size={12} /> Browser extension
+          </button>
           <span className="pill pill--accent">
             <ShieldCheck size={11} /> isolated session
           </span>

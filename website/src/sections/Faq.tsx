@@ -17,7 +17,7 @@ const QUESTIONS = [
   },
   {
     q: 'Is autofill a browser extension?',
-    a: 'Aegis ships its own secure browser window. Logins match by domain and only fill when you explicitly ask, which means no content script sits inside the pages you browse. A companion extension for your everyday browser is on the roadmap, and the comparison page says so.',
+    a: 'Both. Aegis keeps its own private browser, and 1.0.5 adds a companion extension for Chrome, Edge, Brave and Arc. Install it from inside the app, pair it with a six-digit code, and it fills or saves logins over a loopback connection. There is no cloud relay and no copy of the vault in the browser.',
   },
   {
     q: 'What can I keep in it besides passwords?',
@@ -40,7 +40,7 @@ export function Faq() {
     <section className="faq section" id="faq">
       <div className="container">
         <SectionHead
-          eyebrow="09 — Questions"
+          eyebrow="10 — Questions"
           title={
             <>
               Questions you

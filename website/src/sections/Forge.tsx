@@ -155,7 +155,7 @@ export function Forge() {
     <section className="forge section" id="forge">
       <div className="container">
         <SectionHead
-          eyebrow="06 — The forge"
+          eyebrow="07 — The forge"
           title={
             <>
               Forge one.

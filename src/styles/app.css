@@ -4233,10 +4233,215 @@
   font-size: 8px;
 }
 
+.settings-extension {
+  grid-column: 1 / -1;
+  order: 10;
+}
+
+.extension-state {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 11px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.022);
+}
+
+.extension-state > div {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.extension-state b {
+  font-size: 10.5px;
+  font-weight: 550;
+}
+
+.extension-state small {
+  font-size: 8.5px;
+  line-height: 1.45;
+  color: var(--text-3);
+}
+
+.extension-dot {
+  width: 7px;
+  height: 7px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--text-3);
+}
+
+.extension-dot.is-live {
+  background: var(--accent);
+  box-shadow: 0 0 9px rgba(var(--accent-rgb), 0.9);
+}
+
+.extension-dot.is-locked {
+  background: var(--accent-2);
+  opacity: 0.55;
+}
+
+.extension-state .pill {
+  flex-shrink: 0;
+  font-size: 7.5px;
+}
+
+.extension-code {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 13px 14px;
+  border-radius: 13px;
+  border: 1px solid rgba(var(--accent-rgb), 0.18);
+  background:
+    radial-gradient(80% 130% at 0% 0%, rgba(var(--accent-rgb), 0.08), transparent 65%),
+    rgba(255, 255, 255, 0.022);
+}
+
+.extension-code > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.extension-code b {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-weight: 450;
+  letter-spacing: 0.17em;
+  color: var(--accent);
+  line-height: 1.25;
+}
+
+.extension-code small {
+  font-size: 8px;
+  color: var(--text-3);
+}
+
+.extension-code__actions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.extension-code__actions .btn {
+  height: 29px;
+  font-size: 9px;
+  padding: 0 8px;
+}
+
+.extension-error {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 9px;
+  border: 1px solid rgba(var(--danger-rgb), 0.25);
+  background: rgba(var(--danger-rgb), 0.07);
+  color: #ffc3cb;
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.extension-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.extension-steps li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 9px;
+  line-height: 1.5;
+  color: var(--text-3);
+}
+
+.extension-steps .mono {
+  flex-shrink: 0;
+  color: var(--accent);
+  font-size: 7px;
+  padding-top: 2px;
+}
+
+.extension-steps p {
+  margin: 0;
+}
+
+.extension-steps code {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  color: var(--text-2);
+  padding: 1px 4px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.extension-steps b {
+  color: var(--text-2);
+  font-weight: 550;
+}
+
+.extension-browsers {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.extension-browser {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px;
+  border-radius: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.055);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.extension-browser > svg {
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.extension-browser > span {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.extension-browser b {
+  font-size: 9.5px;
+  font-weight: 550;
+}
+
+.extension-browser small {
+  font-size: 8px;
+  color: var(--text-3);
+}
+
+.extension-browser .icon-btn {
+  width: 25px;
+  height: 25px;
+  flex-shrink: 0;
+}
+
 .settings-side {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  order: 6;
 }
 
 .about-badges {

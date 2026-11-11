@@ -79,9 +79,9 @@ function fallbackAsset(key) {
 
 export function fallbackRelease() {
   return {
-    version: '1.0.4',
+    version: '1.0.5',
     released: 'November 2026',
-    tag: 'v1.0.4',
+    tag: 'v1.0.5',
     source: 'fallback',
     assets: {
       windows: fallbackAsset('windows'),

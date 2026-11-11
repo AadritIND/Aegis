@@ -16,6 +16,7 @@ The marketing site for it lives in [`website/`](website) — a separate Vite app
 - **Password Forge** — passphrase / random generator with length, character-set, ambiguity and strength feedback.
 - **Security audit** — strength, reuse, age, missing 2FA and optional Have I Been Pwned range checks (only a 5-character SHA-1 prefix leaves the machine).
 - **Autofill** — a focused browser pane with a credential picker, one-click fill/copy and an allow-listed HTTPS webview.
+- **Browser companion** — a Manifest V3 extension for Chrome, Edge, Brave and Arc. Prepare it from Settings, pair it with a six-digit code, then fill and optionally auto-save logins over a loopback-only bridge.
 - **Encrypted backups** — export/import `.aegis` files protected by their own password.
 - **Auto-hiding reveals** — revealed secrets hide again after 15 seconds; vault tags and weakest-first sorting make large vaults easier to triage.
 - **Command palette** — `Ctrl+K` for fuzzy search, navigation and quick actions.
@@ -56,6 +57,14 @@ Build the macOS app (works from Windows or Linux — see below):
 ```bash
 npm run dist:mac   # Aegis-<version>-mac-arm64.zip + -mac-x64.zip, copied into website/public/downloads
 ```
+
+## Browser extension
+
+The desktop app ships the companion extension in `extension/` and includes that folder in every Windows, macOS and Linux package (`extraResources` in electron-builder, and the macOS assembler). It is not a Web Store build: an app cannot silently install an extension into Chrome, so **Settings → Browser extension → Prepare extension** copies the package to `Downloads/Aegis Browser Extension`, opens the folder, and shows the six-digit pairing code.
+
+To finish the browser side, open `chrome://extensions` (or `edge://extensions`), enable **Developer mode**, choose **Load unpacked**, and select the prepared folder. Open the Aegis popup and enter the code. The code expires after five minutes and can be regenerated in Settings.
+
+The extension talks only to `http://127.0.0.1:47831`. Aegis binds the bridge to loopback, rejects non-extension web origins, stores only a SHA-256 hash of each browser token in `aegis-browsers.json`, and refuses credential requests while the vault is locked. Auto-save is on by default and can be disabled in the popup or extension settings. Unpair a browser from Aegis or from the extension at any time.
 
 ## Keyboard shortcuts
 
@@ -221,3 +230,5 @@ E2E_PROD=1 npx electron scripts/e2e.cjs
 ```
 
 The end-to-end script creates a vault in a temp profile, saves an item through the UI, asserts the file contains no plaintext, locks, unlocks and loads the secure browser.
+
+The extension bridge can be checked independently with a temporary profile: start `electron/extension-bridge.cjs`, pair with the displayed code using a `chrome-extension://` origin, then request matches, fill and save. The bridge test used for the 1.0.5 release covers pairing, CORS/private-network preflight, domain matching, create/update and locked-vault rejection.

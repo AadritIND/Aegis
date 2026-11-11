@@ -192,7 +192,14 @@ def suffix_for(path: str) -> str | None:
     return None
 
 
-def repack(source_zip: str, target_zip: str, asar_path: str, icns_path: str, version: str) -> dict:
+def repack(
+    source_zip: str,
+    target_zip: str,
+    asar_path: str,
+    icns_path: str,
+    extension_dir: str,
+    version: str,
+) -> dict:
     asar_size = os.path.getsize(asar_path)
     icns_size = os.path.getsize(icns_path)
     source_entries = 0
@@ -235,6 +242,19 @@ def repack(source_zip: str, target_zip: str, asar_path: str, icns_path: str, ver
                 zout.writestr(info, handle.read())
             written += 1
 
+        for root, _dirs, files in os.walk(extension_dir):
+            for filename in sorted(files):
+                source_file = os.path.join(root, filename)
+                relative = os.path.relpath(source_file, extension_dir).replace(os.sep, "/")
+                name = f"Aegis.app/Contents/Resources/extension/{relative}"
+                with open(source_file, "rb") as handle:
+                    info = zipfile.ZipInfo(name, date_time=(2026, 10, 28, 0, 0, 0))
+                    info.external_attr = 0o100644 << 16
+                    info.create_system = 3
+                    info.compress_type = zipfile.ZIP_DEFLATED
+                    zout.writestr(info, handle.read())
+                written += 1
+
     return {"sourceEntries": source_entries, "writtenEntries": written, "asarSize": asar_size}
 
 
@@ -254,6 +274,7 @@ def verify(target_zip: str, version: str) -> dict:
             "Aegis.app/Contents/MacOS/Aegis",
             "Aegis.app/Contents/Resources/app.asar",
             "Aegis.app/Contents/Resources/Aegis.icns",
+            "Aegis.app/Contents/Resources/extension/manifest.json",
             "Aegis.app/Contents/Frameworks/Electron Framework.framework/Versions/A/Electron Framework",
         ]
         for suffix in HELPER_SUFFIXES:
@@ -320,8 +341,11 @@ def main() -> int:
 
     asar_path = prepare_asar(version)
     icns_path = os.path.join(ROOT, "build", "icon.icns")
+    extension_dir = os.path.join(ROOT, "extension")
     if not os.path.exists(icns_path):
         sys.exit("missing build/icon.icns — run `python scripts/make-icns.py` first")
+    if not os.path.exists(os.path.join(extension_dir, "manifest.json")):
+        sys.exit("missing extension/manifest.json")
 
     results = []
     for arch in arches:
@@ -332,7 +356,7 @@ def main() -> int:
 
         target = os.path.join(args.out, f"Aegis-{version}-mac-{arch}.zip")
         log(f"assembling {os.path.basename(target)}")
-        stats = repack(source, target, asar_path, icns_path, version)
+        stats = repack(source, target, asar_path, icns_path, extension_dir, version)
         report = verify(target, version)
 
         size = os.path.getsize(target)

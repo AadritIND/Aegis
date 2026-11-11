@@ -225,7 +225,7 @@ export function Anatomy() {
 
       <div className="container anatomy__head">
         <div className="anatomy__headtop">
-          <span className="eyebrow">05 — Anatomy</span>
+          <span className="eyebrow">06 — Anatomy</span>
           <span className="mono">one file · five layers</span>
         </div>
         <div className="anatomy__headgrid">

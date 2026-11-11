@@ -67,7 +67,7 @@ export function Bento() {
             </>
           }
           copy="Everything you expect from a password manager, rebuilt around a single idea: the only machine that ever sees your secrets should be the one on your desk."
-          aside={<span className="mono dim">Electron · Windows · macOS · Linux</span>}
+          aside={<span className="mono dim">Electron · Windows · macOS · Linux · companion extension</span>}
         />
 
         <div className="bento__grid">
@@ -140,12 +140,12 @@ export function Bento() {
                 <span className="tile__glyph tile__glyph--ink">
                   <MousePointerClick size={18} strokeWidth={1.9} />
                 </span>
-                <span className="tile__tag mono">03 — Autofill</span>
+                <span className="tile__tag mono">03 — Autofill + extension</span>
               </div>
-              <h3 className="tile__title">Autofill, minus the middleman.</h3>
+              <h3 className="tile__title">Two browsers. One vault.</h3>
               <p className="tile__body">
-                Aegis has its own secure browser window. Logins match by domain and fill only when you ask — no
-                content script living inside your everyday browser.
+                Use Aegis&rsquo;s own private window, or pair the companion extension in Chrome, Edge,
+                Brave or Arc. Both match by domain and fill only when you ask — the vault stays here.
               </p>
               <div className="minibrowser" aria-hidden="true">
                 <div className="minibrowser__bar">

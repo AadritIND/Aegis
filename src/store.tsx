@@ -264,6 +264,13 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!isDesktop) return
+    return window.vault.onVaultData((next) => {
+      if (phaseRef.current === 'unlocked') setData(next)
+    })
+  }, [isDesktop])
+
+  useEffect(() => {
+    if (!isDesktop) return
     return window.vault.onPalette(() => {
       if (phaseRef.current === 'unlocked') setPaletteOpen(true)
     })

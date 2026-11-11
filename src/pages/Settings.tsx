@@ -4,6 +4,7 @@ import {
   AlertTriangle,
   Check,
   CloudOff,
+  Copy,
   Database,
   Download,
   Fingerprint,
@@ -12,6 +13,7 @@ import {
   Loader2,
   LockKeyhole,
   Palette,
+  Puzzle,
   RefreshCw,
   ShieldCheck,
   Trash2,
@@ -20,7 +22,7 @@ import {
   X,
 } from 'lucide-react'
 import { useStore } from '../store'
-import type { AccentName, Settings } from '../types'
+import type { AccentName, ExtensionInfo, Settings } from '../types'
 import { useUpdater } from '../lib/updater'
 import { cn, initials } from '../lib/utils'
 
@@ -129,15 +131,45 @@ export function SettingsPage() {
     importBackup,
     changeMasterPassword,
     wipeVault,
+    copy,
     addToast,
   } = useStore()
   const [name, setName] = useState(profile.name)
   const [prompt, setPrompt] = useState<PromptKind | null>(null)
+  const [extension, setExtension] = useState<ExtensionInfo | null>(null)
+  const [extensionBusy, setExtensionBusy] = useState(false)
+  const [extensionError, setExtensionError] = useState('')
   const updater = useUpdater()
 
   useEffect(() => {
     setName(profile.name)
   }, [profile.name])
+
+  const loadExtension = async () => {
+    if (!isDesktop) return
+    try {
+      setExtension(await window.vault.extensionInfo())
+      setExtensionError('')
+    } catch (error) {
+      setExtensionError(error instanceof Error ? error.message : 'The browser bridge is unavailable.')
+    }
+  }
+
+  useEffect(() => {
+    if (!isDesktop) return
+    let live = true
+    window.vault
+      .extensionInfo()
+      .then((next) => {
+        if (live) setExtension(next)
+      })
+      .catch((error) => {
+        if (live) setExtensionError(error instanceof Error ? error.message : 'The browser bridge is unavailable.')
+      })
+    return () => {
+      live = false
+    }
+  }, [isDesktop])
 
   const updateBusy = updater.checking || updater.state.status === 'checking'
   const updateAction = () => {
@@ -205,6 +237,58 @@ export function SettingsPage() {
   const saveName = () => {
     updateProfile(name.trim())
     addToast({ title: 'Profile updated', detail: 'Stored inside your encrypted vault.', tone: 'success' })
+  }
+
+  const prepareExtension = async () => {
+    setExtensionBusy(true)
+    setExtensionError('')
+    try {
+      const result = await window.vault.extensionInstall()
+      await loadExtension()
+      addToast({
+        title: 'Extension prepared',
+        detail: `Load the unpacked folder from ${result.path}.`,
+        tone: 'success',
+      })
+    } catch (error) {
+      setExtensionError(
+        error instanceof Error && error.message === 'EXTENSION_DESKTOP_ONLY'
+          ? 'The extension installer is available in the desktop app.'
+          : 'Could not prepare the extension folder.',
+      )
+    } finally {
+      setExtensionBusy(false)
+    }
+  }
+
+  const newPairingCode = async () => {
+    setExtensionBusy(true)
+    try {
+      setExtension(await window.vault.extensionNewCode())
+      setExtensionError('')
+    } catch {
+      setExtensionError('Could not generate a new pairing code.')
+    } finally {
+      setExtensionBusy(false)
+    }
+  }
+
+  const copyPairingCode = () => {
+    if (!extension?.code) return
+    const code = extension.code.replace(/(\d{3})(\d{3})/, '$1 $2')
+    void copy(code, { label: 'Pairing code' })
+  }
+
+  const revokeBrowser = async (id: string, browserName: string) => {
+    setExtensionBusy(true)
+    try {
+      setExtension(await window.vault.extensionRevoke(id))
+      addToast({ title: 'Browser unpaired', detail: browserName, tone: 'info' })
+    } catch {
+      setExtensionError('Could not revoke that browser.')
+    } finally {
+      setExtensionBusy(false)
+    }
   }
 
   const modifier = info?.platform === 'darwin' ? '⌘' : 'Ctrl'
@@ -461,6 +545,127 @@ export function SettingsPage() {
           </div>
         </SettingsCard>
 
+        <SettingsCard
+          icon={Puzzle}
+          title="Browser extension"
+          description="Autofill and save logins from Chrome, Edge, Brave or Arc."
+          className="settings-extension"
+        >
+          {!isDesktop ? (
+            <p className="settings-note">
+              <Puzzle size={11} /> The companion installer is available in the installed desktop app.
+            </p>
+          ) : (
+            <>
+              <div className="extension-state">
+                <span
+                  className={cn(
+                    'extension-dot',
+                    extension?.running && !extension.locked && 'is-live',
+                    extension?.locked && 'is-locked',
+                  )}
+                />
+                <div>
+                  <b>{extension?.running ? 'Bridge ready' : 'Bridge unavailable'}</b>
+                  <small>
+                    {extension?.error
+                      ? extension.error
+                      : extension?.locked
+                        ? 'Unlock the vault to pair a browser or fill a login.'
+                        : 'Only this computer can reach the paired browser bridge.'}
+                  </small>
+                </div>
+                <span className="pill mono">127.0.0.1:{extension?.port || 47831}</span>
+              </div>
+
+              {extensionError && <p className="extension-error">{extensionError}</p>}
+
+              {extension && !extension.locked && extension.code && (
+                <div className="extension-code">
+                  <div>
+                    <span className="field-label">Pairing code</span>
+                    <b>{extension.code.replace(/(\d{3})(\d{3})/, '$1 $2')}</b>
+                    <small>Expires in five minutes · enter it in the extension popup</small>
+                  </div>
+                  <div className="extension-code__actions">
+                    <button type="button" className="btn btn-outline btn-sm" onClick={copyPairingCode}>
+                      <Copy size={12} /> Copy
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-outline btn-sm"
+                      onClick={() => void newPairingCode()}
+                      disabled={extensionBusy}
+                    >
+                      <RefreshCw size={12} className={extensionBusy ? 'spin' : undefined} /> New
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              <div className="settings-actions">
+                <button
+                  type="button"
+                  className="btn btn-clay"
+                  onClick={() => void prepareExtension()}
+                  disabled={extensionBusy}
+                >
+                  {extensionBusy ? <Loader2 size={13} className="spin" /> : <Puzzle size={13} />}
+                  {extensionBusy ? 'Preparing…' : 'Prepare extension'}
+                </button>
+                <span className="settings-note">
+                  Copies the extension to Downloads/Aegis Browser Extension and opens it. Chrome,
+                  Edge, Brave and Arc can load it unpacked.
+                </span>
+              </div>
+
+              <ol className="extension-steps">
+                <li>
+                  <span className="mono">01</span>
+                  <p>Open <code>chrome://extensions</code> (or <code>edge://extensions</code>) and turn on Developer mode.</p>
+                </li>
+                <li>
+                  <span className="mono">02</span>
+                  <p>Choose <b>Load unpacked</b> and select the prepared <b>Aegis Browser Extension</b> folder.</p>
+                </li>
+                <li>
+                  <span className="mono">03</span>
+                  <p>Pin Aegis, open its popup, and enter the pairing code shown above. One code pairs one browser.</p>
+                </li>
+              </ol>
+
+              {extension?.browsers.length ? (
+                <div className="extension-browsers">
+                  <span className="field-label">Paired browsers</span>
+                  {extension.browsers.map((browser) => (
+                    <div className="extension-browser" key={browser.id}>
+                      <Puzzle size={12} />
+                      <span>
+                        <b>{browser.name}</b>
+                        <small>
+                          Paired {new Date(browser.createdAt).toLocaleDateString()}
+                          {browser.lastSeenAt ? ` · last used ${new Date(browser.lastSeenAt).toLocaleDateString()}` : ''}
+                        </small>
+                      </span>
+                      <button
+                        type="button"
+                        className="icon-btn"
+                        onClick={() => void revokeBrowser(browser.id, browser.name)}
+                        aria-label={`Unpair ${browser.name}`}
+                        title="Unpair browser"
+                      >
+                        <Trash2 size={12} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="settings-note">No browser is paired yet.</p>
+              )}
+            </>
+          )}
+        </SettingsCard>
+
         <div className="settings-side">
           <SettingsCard
             icon={ShieldCheck}
@@ -480,7 +685,7 @@ export function SettingsPage() {
             <div className="about-rows">
               <div>
                 <span>Version</span>
-                <b>{info?.version || '1.0.4'}</b>
+                <b>{info?.version || '1.0.5'}</b>
               </div>
               <div>
                 <span>Runtime</span>

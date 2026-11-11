@@ -9,6 +9,7 @@ import { Anatomy } from './sections/Anatomy'
 import { Bento } from './sections/Bento'
 import { Compare } from './sections/Compare'
 import { Download } from './sections/Download'
+import { Extension } from './sections/Extension'
 import { Faq } from './sections/Faq'
 import { Forge } from './sections/Forge'
 import { Hero } from './sections/Hero'
@@ -55,6 +56,7 @@ export default function App() {
         <Bento />
         <Manifesto />
         <Tour />
+        <Extension />
         <Security />
         <Anatomy />
         <Forge />

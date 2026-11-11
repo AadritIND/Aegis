@@ -11,6 +11,7 @@ on:
       - 'electron/**'
       - 'src/**'
       - 'build/**'
+      - 'extension/**'
       - 'scripts/**'
       - 'index.html'
       - 'package.json'

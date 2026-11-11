@@ -1,0 +1,46 @@
+{
+  "manifest_version": 3,
+  "name": "Aegis Browser Companion",
+  "version": "1.0.5",
+  "description": "Autofill and save logins from your local Aegis vault. No cloud, no account, no copy of the vault.",
+  "minimum_chrome_version": "116",
+  "permissions": ["storage", "tabs", "activeTab", "scripting", "contextMenus", "clipboardWrite"],
+  "host_permissions": ["http://127.0.0.1:47831/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Aegis",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "options_page": "options.html",
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ],
+  "commands": {
+    "fill-login": {
+      "suggested_key": {
+        "default": "Alt+Shift+F",
+        "mac": "Alt+Shift+F"
+      },
+      "description": "Fill the first matching Aegis login"
+    }
+  }
+}

@@ -38,7 +38,13 @@ contextBridge.exposeInMainWorld('vault', {
   updaterDownload: () => call('updater:download'),
   updaterInstall: () => call('updater:install'),
 
+  extensionInfo: () => call('extension:info'),
+  extensionNewCode: () => call('extension:new-code'),
+  extensionRevoke: (id) => call('extension:revoke', id),
+  extensionInstall: () => call('extension:install'),
+
   onLocked: (cb) => subscribe('vault:locked', cb),
+  onVaultData: (cb) => subscribe('vault:data', cb),
   onPalette: (cb) => subscribe('palette:open', cb),
   onWindowState: (cb) => subscribe('window:state', cb),
   onUpdaterState: (cb) => subscribe('updater:state', cb),

@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Aegis Companion — Settings</title>
+    <link rel="stylesheet" href="popup.css" />
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body class="options-page">
+    <main class="options">
+      <header class="options__head">
+        <span class="mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M16 3.5 27 8v8.2c0 6.2-4.4 10.3-11 12.3-6.6-2-11-6.1-11-12.3V8l11-4.5Z" stroke="currentColor" stroke-width="1.8" />
+            <path d="M16 10v8m0 0 3-2m-3 2-3-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+          </svg>
+        </span>
+        <div>
+          <div class="kicker">Aegis · local companion</div>
+          <h1>Browser settings</h1>
+        </div>
+      </header>
+
+      <section class="card">
+        <div class="card__head">
+          <span>
+            <b>Connection</b>
+            <small id="connection-detail">Checking the desktop app…</small>
+          </span>
+          <span class="status" id="options-status"><i></i><span id="options-status-text">Checking</span></span>
+        </div>
+        <div class="actions">
+          <button class="primary" type="button" id="open-app">Open Aegis</button>
+          <button class="outline" type="button" id="unpair">Unpair this browser</button>
+        </div>
+        <p class="note">
+          To connect another browser, install the extension from Aegis → Settings → Browser extension,
+          then enter the six-digit code in its popup. Pairing tokens are stored as hashes on your
+          machine and can be revoked at any time.
+        </p>
+      </section>
+
+      <section class="card">
+        <div class="card__head">
+          <span>
+            <b>Auto-save submitted logins</b>
+            <small>When a login form is submitted, Aegis can create or update the matching item.</small>
+          </span>
+          <button class="switch" id="options-autosave" type="button" role="switch" aria-checked="true" aria-label="Auto-save submitted logins"><span></span></button>
+        </div>
+        <p class="note">
+          Auto-save only runs while Aegis is unlocked. The extension sends the submitted username and
+          password to the loopback bridge; Aegis stores it in the encrypted vault on this computer.
+        </p>
+      </section>
+
+      <section class="card">
+        <div class="card__head">
+          <span><b>How matching works</b><small>Domain-first, no cloud lookup.</small></span>
+        </div>
+        <ul class="list">
+          <li><b>1.</b> The extension asks the desktop app for logins whose saved URL matches the active site.</li>
+          <li><b>2.</b> Only after you press Fill does the app return that one username and password.</li>
+          <li><b>3.</b> The browser receives the values, writes them into the form, and never sees the rest of the vault.</li>
+          <li><b>4.</b> Auto-save is optional and can be turned off here or in the popup.</li>
+        </ul>
+      </section>
+
+      <footer class="options__foot">
+        <span id="options-version">Aegis v1.0.5</span>
+        <span>127.0.0.1 only · no remote endpoints</span>
+      </footer>
+    </main>
+    <script src="options.js"></script>
+  </body>
+</html>

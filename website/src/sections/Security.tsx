@@ -16,7 +16,7 @@ export function Security() {
       <div className="container">
         <SectionHead
           dark
-          eyebrow="04 — Security model"
+          eyebrow="05 — Security model"
           title={
             <>
               Zero knowledge isn&rsquo;t a feature.

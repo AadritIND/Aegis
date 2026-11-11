@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { AlertTriangle, Check, Copy, Download as DownloadIcon, HardDrive, ShieldCheck } from 'lucide-react'
+import { AlertTriangle, Check, Copy, Download as DownloadIcon, HardDrive, Puzzle, ShieldCheck } from 'lucide-react'
 import { PLATFORMS, type Platform } from '../config'
 import { detectPlatform } from '../lib/platform'
 import { useRelease } from '../lib/release'
@@ -59,13 +59,13 @@ export function Download() {
     <section className="download section" id="download">
       <div className="container">
         <SectionHead
-          eyebrow="08 — Download"
+          eyebrow="09 — Download"
           title={
             <>
               Take it <span className="serif">home.</span>
             </>
           }
-          copy="One app, three platforms, no account. Install it, set a master password, and start moving secrets out of browsers and into a file you actually own."
+          copy="One app, three platforms, no account. Every build includes the browser companion and its in-app installer. Install Aegis, set a master password, then pair your everyday browser when you are ready."
           aside={
             <span className="mono">
               v{release.version} · {release.released}
@@ -223,6 +223,9 @@ export function Download() {
             <div className="dl__req mono">
               <span>
                 <ShieldCheck size={12} /> Windows 10/11 x64 · macOS 11+ · Linux x64
+              </span>
+              <span>
+                <Puzzle size={12} /> Browser extension included
               </span>
               <span>≈ 300–350 MB installed</span>
             </div>

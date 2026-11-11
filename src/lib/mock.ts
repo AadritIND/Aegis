@@ -274,7 +274,7 @@ export const mockBridge: VaultBridge = {
   isElectron: false,
   async appInfo() {
     return {
-      version: '1.0.4',
+      version: '1.0.5',
       platform: 'web preview',
       electron: '—',
       isDev: true,
@@ -353,18 +353,42 @@ export const mockBridge: VaultBridge = {
     window.open(url, '_blank', 'noopener,noreferrer')
   },
   async updaterState() {
-    return { status: 'disabled', currentVersion: '1.0.4', reason: 'Browser preview' }
+    return { status: 'disabled', currentVersion: '1.0.5', reason: 'Browser preview' }
   },
   async updaterCheck() {
-    return { status: 'disabled', currentVersion: '1.0.4', reason: 'Browser preview' }
+    return { status: 'disabled', currentVersion: '1.0.5', reason: 'Browser preview' }
   },
   async updaterDownload() {
-    return { status: 'disabled', currentVersion: '1.0.4', reason: 'Browser preview' }
+    return { status: 'disabled', currentVersion: '1.0.5', reason: 'Browser preview' }
   },
   async updaterInstall() {
     return { ok: false, reason: 'preview' }
   },
+  async extensionInfo() {
+    return {
+      running: false,
+      port: 47831,
+      locked: !unlocked,
+      code: null,
+      codeExpiresAt: null,
+      browsers: [],
+      error: 'The browser bridge is only available in the desktop app.',
+      installPath: '',
+    }
+  },
+  async extensionNewCode() {
+    return this.extensionInfo()
+  },
+  async extensionRevoke() {
+    return this.extensionInfo()
+  },
+  async extensionInstall() {
+    throw new Error('EXTENSION_DESKTOP_ONLY')
+  },
   onLocked() {
+    return () => {}
+  },
+  onVaultData() {
     return () => {}
   },
   onPalette() {

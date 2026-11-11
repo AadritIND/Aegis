@@ -20,6 +20,7 @@ const fs = require('fs')
 const fsp = fs.promises
 const crypto = require('crypto')
 const { autoUpdater } = require('electron-updater')
+const { createExtensionBridge } = require('./extension-bridge.cjs')
 
 const APP_ID = 'app.aegis.vault'
 const KDF = { name: 'scrypt', N: 32768, r: 8, p: 1, maxmem: 192 * 1024 * 1024 }
@@ -167,6 +168,38 @@ function normaliseVault(data) {
   }
 }
 
+async function persistSessionData(incoming, broadcast = false) {
+  if (!session) throw new Error('LOCKED')
+  const data = normaliseVault(incoming)
+  data.updatedAt = Date.now()
+  const envelope = makeEnvelope(data, session.key, session.salt, undefined, session.createdAt)
+  envelope.hint = (await readEnvelope())?.hint || ''
+  await writeEnvelope(envelope)
+  session.data = data
+  if (broadcast && win && !win.isDestroyed()) win.webContents.send('vault:data', data)
+  return data
+}
+
+function focusMainWindow() {
+  if (!win || win.isDestroyed()) return
+  if (win.isMinimized()) win.restore()
+  win.show()
+  win.focus()
+}
+
+const extensionBridge = createExtensionBridge({
+  app,
+  getSession: () => session,
+  saveData: (data) => persistSessionData(data, true),
+  focusWindow: focusMainWindow,
+  lockVault: () => lockVault('extension'),
+})
+
+const extensionInfoPayload = () => ({
+  ...extensionBridge.info(),
+  installPath: path.join(app.getPath('downloads'), 'Aegis Browser Extension'),
+})
+
 /* ----------------------------------------------------------------- session */
 
 function clearSensitiveClipboard() {
@@ -195,6 +228,11 @@ function armAutoLock(minutes) {
 function lockVault(reason = 'manual') {
   session = null
   failedAttempts = 0
+  try {
+    extensionBridge.clearCode()
+  } catch {
+    /* bridge is not initialised during early boot */
+  }
   if (autoLockTimer) {
     clearTimeout(autoLockTimer)
     autoLockTimer = null
@@ -518,14 +556,34 @@ handle('vault:lock', async () => {
 })
 
 handle('vault:save', async (incoming) => {
-  if (!session) throw new Error('LOCKED')
-  const data = normaliseVault(incoming)
-  data.updatedAt = Date.now()
-  const envelope = makeEnvelope(data, session.key, session.salt, undefined, session.createdAt)
-  envelope.hint = (await readEnvelope())?.hint || ''
-  await writeEnvelope(envelope)
-  session.data = data
+  const data = await persistSessionData(incoming)
   return { savedAt: data.updatedAt }
+})
+
+handle('extension:info', async () => extensionInfoPayload())
+
+handle('extension:new-code', async () => {
+  extensionBridge.newCode()
+  return extensionInfoPayload()
+})
+
+handle('extension:revoke', async (id) => {
+  await extensionBridge.revoke(String(id || ''))
+  return extensionInfoPayload()
+})
+
+handle('extension:install', async () => {
+  const source = app.isPackaged
+    ? path.join(process.resourcesPath, 'extension')
+    : path.join(__dirname, '..', 'extension')
+  if (!fs.existsSync(path.join(source, 'manifest.json'))) {
+    throw new Error('EXTENSION_MISSING')
+  }
+  const target = path.join(app.getPath('downloads'), 'Aegis Browser Extension')
+  await fsp.mkdir(target, { recursive: true })
+  await fsp.cp(source, target, { recursive: true, force: true })
+  await shell.openPath(target)
+  return { path: target }
 })
 
 handle('vault:touch', async () => {
@@ -668,6 +726,7 @@ handle('vault:wipe', async () => {
   } catch {
     /* ignore */
   }
+  await extensionBridge.clearAll()
 })
 
 handle('window:control', async (action) => {
@@ -783,6 +842,7 @@ if (!gotSingleInstance) {
     nativeTheme.themeSource = 'dark'
     applyApplicationMenu()
     createWindow()
+    void extensionBridge.start()
     setupUpdater()
 
     const openPalette = () => {
@@ -818,4 +878,5 @@ app.on('will-quit', () => {
   globalShortcut.unregisterAll()
   clearSensitiveClipboard()
   stopUpdater()
+  extensionBridge.stop()
 })

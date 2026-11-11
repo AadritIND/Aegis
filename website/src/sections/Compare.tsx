@@ -15,7 +15,7 @@ const LOCAL = [
   { kind: 'yes', text: 'No account, no email, free forever' },
   { kind: 'yes', text: 'Breach surface: the file you hold' },
   { kind: 'meh', text: 'Manual sync, on purpose' },
-  { kind: 'no', text: 'No browser extension yet' },
+  { kind: 'yes', text: 'Browser extension, paired locally' },
   { kind: 'yes', text: 'Offline always · Windows + macOS + Linux' },
 ]
 
@@ -31,7 +31,7 @@ export function Compare() {
       <div className="container">
         <SectionHead
           dark
-          eyebrow="07 — Honestly"
+          eyebrow="08 — Honestly"
           title={
             <>
               Cloud vaults are convenient.
@@ -90,8 +90,10 @@ export function Compare() {
         <div className="compare__note" data-reveal>
           <span className="mono">Full disclosure</span>
           <p>
-            We concede two rows. Cloud managers already sync automatically and ship a mature browser extension — if
-            those matter more to you than custody, they are the better tool. Aegis is for the other trade-off.
+            We concede one row. Cloud managers sync automatically across devices. Aegis makes you copy the
+            encrypted file on purpose, because the vault never leaves the machine. The companion extension
+            changes where you fill — not where the vault lives. If sync matters more than custody, the cloud
+            managers are still the better tool.
           </p>
         </div>
       </div>

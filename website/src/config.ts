@@ -18,7 +18,7 @@ export const SITE = {
   name: 'Aegis',
   tagline: 'The quiet vault for everything private.',
   url: 'https://aegissvault.vercel.app',
-  version: '1.0.4',
+  version: '1.0.5',
   released: 'November 2026',
   // Repository / support links.
   repo: 'https://github.com/AadritIND/Aegis',
@@ -80,7 +80,7 @@ export const FAQ = [
   },
   {
     q: 'Is autofill a browser extension?',
-    a: 'Aegis ships its own secure browser window. Logins are matched by domain and only ever filled when you explicitly ask for them, which means no content script is sitting inside the pages you browse. A companion extension is on the roadmap for people who want their everyday browser.',
+    a: 'Both. Aegis keeps its own private browser, and 1.0.5 adds a companion extension for Chrome, Edge, Brave and Arc. Install it from inside the app, pair it with a six-digit code, and it fills or saves logins over a loopback connection. There is no cloud relay and no copy of the vault in the browser.',
   },
   {
     q: 'What can I keep in it besides passwords?',
