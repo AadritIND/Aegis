@@ -20,6 +20,8 @@ export type LatestRelease = {
     windows: ReleaseAsset
     macZip: ReleaseAsset
     macDmg: ReleaseAsset
+    linuxAppImage: ReleaseAsset
+    linuxDeb: ReleaseAsset
   }
 }
 
@@ -56,6 +58,24 @@ const FALLBACK: LatestRelease = {
       bytes: 185262689,
       sha256: '',
     },
+    linuxAppImage: {
+      key: 'linuxAppImage',
+      name: 'Aegis-Linux-x86_64.AppImage',
+      label: 'AppImage (x64)',
+      file: RELEASE.linux.appImage.file,
+      size: RELEASE.linux.appImage.size,
+      bytes: null,
+      sha256: '',
+    },
+    linuxDeb: {
+      key: 'linuxDeb',
+      name: 'Aegis-Linux-x86_64.deb',
+      label: '.deb (x64)',
+      file: RELEASE.linux.deb.file,
+      size: RELEASE.linux.deb.size,
+      bytes: null,
+      sha256: '',
+    },
   },
 }
 
@@ -72,7 +92,7 @@ function isLatestRelease(value: unknown): value is LatestRelease {
   if (!candidate.assets || typeof candidate.assets !== 'object') return false
 
   const assets = candidate.assets as Record<string, { file?: unknown; sha256?: unknown; size?: unknown }>
-  return (['windows', 'macZip', 'macDmg'] as const).every((key) => {
+  return (['windows', 'macZip', 'macDmg', 'linuxAppImage', 'linuxDeb'] as const).every((key) => {
     const asset = assets[key]
     return Boolean(
       asset &&

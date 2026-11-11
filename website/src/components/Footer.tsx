@@ -6,9 +6,12 @@ import { scrollToTop } from '../lib/smooth'
 import { Logo } from './Logo'
 
 export function Footer() {
-  const mac = detectPlatform() === 'macos'
+  const detected = detectPlatform()
+  const mac = detected === 'macos'
+  const linux = detected === 'linux'
   const { version } = useRelease()
-  const href = mac ? '#download' : (PLATFORMS.find((p) => p.id === 'windows')?.file ?? RELEASE.windows.file)
+  const href =
+    mac || linux ? '#download' : (PLATFORMS.find((p) => p.id === 'windows')?.file ?? RELEASE.windows.file)
 
   return (
     <footer className="foot">
@@ -31,12 +34,12 @@ export function Footer() {
             for <em>your own secrets.</em>
           </h2>
           <div className="foot__aside">
-            <a className="btn btn--dark btn--lg" href={href} download={!mac}>
+            <a className="btn btn--dark btn--lg" href={href} download={!mac && !linux}>
               <Download size={16} />
-              {mac ? 'Get Aegis for macOS' : 'Download Aegis'}
+              {mac ? 'Get Aegis for macOS' : linux ? 'Get Aegis for Linux' : 'Download Aegis'}
             </a>
             <span className="mono">
-              v{version} · Windows + macOS · free forever
+              v{version} · Windows + macOS + Linux · free forever
             </span>
           </div>
         </div>
@@ -70,7 +73,7 @@ export function Footer() {
             <h4>Fine print</h4>
             <span>Unsigned builds</span>
             <span>No account · no recovery</span>
-            <span>Windows 10/11 · macOS 11+</span>
+            <span>Windows 10/11 · macOS 11+ · Linux x64</span>
             <button type="button" onClick={scrollToTop} className="foot__top-btn">
               Back to top <ArrowUp size={12} />
             </button>

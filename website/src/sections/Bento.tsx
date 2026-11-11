@@ -67,7 +67,7 @@ export function Bento() {
             </>
           }
           copy="Everything you expect from a password manager, rebuilt around a single idea: the only machine that ever sees your secrets should be the one on your desk."
-          aside={<span className="mono dim">Electron · Windows · macOS</span>}
+          aside={<span className="mono dim">Electron · Windows · macOS · Linux</span>}
         />
 
         <div className="bento__grid">

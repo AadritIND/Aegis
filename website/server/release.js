@@ -24,6 +24,18 @@ export const ASSETS = {
     query: 'mac-dmg',
     bytes: 185262689,
   },
+  linuxAppImage: {
+    name: 'Aegis-Linux-x86_64.AppImage',
+    label: 'AppImage (x64)',
+    query: 'linux-appimage',
+    bytes: 120000000,
+  },
+  linuxDeb: {
+    name: 'Aegis-Linux-x86_64.deb',
+    label: '.deb (x64)',
+    query: 'linux-deb',
+    bytes: 90000000,
+  },
 }
 
 const ASSET_BY_QUERY = Object.fromEntries(
@@ -67,14 +79,16 @@ function fallbackAsset(key) {
 
 export function fallbackRelease() {
   return {
-    version: '1.0.3',
+    version: '1.0.4',
     released: 'November 2026',
-    tag: 'v1.0.3',
+    tag: 'v1.0.4',
     source: 'fallback',
     assets: {
       windows: fallbackAsset('windows'),
       macZip: fallbackAsset('macZip'),
       macDmg: fallbackAsset('macDmg'),
+      linuxAppImage: fallbackAsset('linuxAppImage'),
+      linuxDeb: fallbackAsset('linuxDeb'),
     },
   }
 }

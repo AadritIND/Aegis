@@ -28,10 +28,13 @@ export function Nav({ tint, onTint }: { tint: string; onTint: (tint: string) => 
   const [active, setActive] = useState('product')
   const [menu, setMenu] = useState(false)
   const nav = useRef<HTMLElement>(null)
-  const mac = detectPlatform() === 'macos'
+  const detected = detectPlatform()
+  const mac = detected === 'macos'
+  const linux = detected === 'linux'
   const { version } = useRelease()
   const shortVersion = version.split('.').slice(0, 2).join('.')
-  const href = mac ? '#download' : (PLATFORMS.find((p) => p.id === 'windows')?.file ?? RELEASE.windows.file)
+  const href =
+    mac || linux ? '#download' : (PLATFORMS.find((p) => p.id === 'windows')?.file ?? RELEASE.windows.file)
 
   useEffect(() => {
     let raf = 0
@@ -129,7 +132,7 @@ export function Nav({ tint, onTint }: { tint: string; onTint: (tint: string) => 
             ))}
           </div>
 
-          <a className="btn btn--primary nav__cta" href={href} download={!mac}>
+          <a className="btn btn--primary nav__cta" href={href} download={!mac && !linux}>
             <Download size={14} strokeWidth={2.3} />
             Download
           </a>
@@ -171,13 +174,14 @@ export function Nav({ tint, onTint }: { tint: string; onTint: (tint: string) => 
           <a
             className="btn btn--primary btn--lg"
             href={href}
-            download={!mac}
+            download={!mac && !linux}
             onClick={() => {
               setMenu(false)
               lockScroll(false)
             }}
           >
-            <Download size={16} /> {mac ? 'Get Aegis for macOS' : 'Download for Windows'}
+            <Download size={16} />{' '}
+            {mac ? 'Get Aegis for macOS' : linux ? 'Get Aegis for Linux' : 'Download for Windows'}
           </a>
           <a
             className="link-arrow"

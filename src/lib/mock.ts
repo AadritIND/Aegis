@@ -274,7 +274,7 @@ export const mockBridge: VaultBridge = {
   isElectron: false,
   async appInfo() {
     return {
-      version: '1.0.0',
+      version: '1.0.4',
       platform: 'web preview',
       electron: '—',
       isDev: true,
@@ -353,13 +353,13 @@ export const mockBridge: VaultBridge = {
     window.open(url, '_blank', 'noopener,noreferrer')
   },
   async updaterState() {
-    return { status: 'disabled', currentVersion: '1.0.0', reason: 'Browser preview' }
+    return { status: 'disabled', currentVersion: '1.0.4', reason: 'Browser preview' }
   },
   async updaterCheck() {
-    return { status: 'disabled', currentVersion: '1.0.0', reason: 'Browser preview' }
+    return { status: 'disabled', currentVersion: '1.0.4', reason: 'Browser preview' }
   },
   async updaterDownload() {
-    return { status: 'disabled', currentVersion: '1.0.0', reason: 'Browser preview' }
+    return { status: 'disabled', currentVersion: '1.0.4', reason: 'Browser preview' }
   },
   async updaterInstall() {
     return { ok: false, reason: 'preview' }

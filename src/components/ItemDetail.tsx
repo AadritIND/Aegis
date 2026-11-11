@@ -40,12 +40,19 @@ export function ItemDetail({
   const [confirmDelete, setConfirmDelete] = useState(false)
   const meta = TYPES[item.type]
   const itemHealth = health.perItem[item.id]
+  const anyRevealed = Object.values(revealed).some(Boolean)
 
   useEffect(() => {
     if (!confirmDelete) return
     const timer = window.setTimeout(() => setConfirmDelete(false), 6000)
     return () => window.clearTimeout(timer)
   }, [confirmDelete])
+
+  useEffect(() => {
+    if (!anyRevealed) return
+    const timer = window.setTimeout(() => setRevealed({}), 15000)
+    return () => window.clearTimeout(timer)
+  }, [anyRevealed, revealed])
 
   const renderValue = (key: string, value: string, secret: boolean) => {
     if (!value) return <span className="detail-field__empty">Not set</span>
@@ -86,6 +93,14 @@ export function ItemDetail({
           </button>
         )}
       </div>
+
+      {anyRevealed && (
+        <div className="detail__reveal" role="status" aria-live="polite">
+          <Eye size={12} />
+          <span>Secrets hide automatically in 15 seconds</span>
+          <span className="detail__reveal-bar" aria-hidden="true" />
+        </div>
+      )}
 
       {(item.tags.length > 0 || itemHealth?.strength) && (
         <div className="detail__badges">

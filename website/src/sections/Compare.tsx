@@ -16,7 +16,7 @@ const LOCAL = [
   { kind: 'yes', text: 'Breach surface: the file you hold' },
   { kind: 'meh', text: 'Manual sync, on purpose' },
   { kind: 'no', text: 'No browser extension yet' },
-  { kind: 'yes', text: 'Offline always · Windows + macOS' },
+  { kind: 'yes', text: 'Offline always · Windows + macOS + Linux' },
 ]
 
 function Mark({ kind }: { kind: string }) {

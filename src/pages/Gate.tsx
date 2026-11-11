@@ -214,7 +214,7 @@ export function Gate({ mode }: { mode: 'locked' | 'onboarding' }) {
             <span>
               <KeyRound size={12} /> no recovery
             </span>
-            <span className="mono">v{info?.version || '1.0.0'}</span>
+            <span className="mono">v{info?.version || '1.0.4'}</span>
           </div>
         </motion.div>
       </section>

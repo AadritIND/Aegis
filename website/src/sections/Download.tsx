@@ -65,7 +65,7 @@ export function Download() {
               Take it <span className="serif">home.</span>
             </>
           }
-          copy="One app, two platforms, no account. Install it, set a master password, and start moving secrets out of browsers and into a file you actually own."
+          copy="One app, three platforms, no account. Install it, set a master password, and start moving secrets out of browsers and into a file you actually own."
           aside={
             <span className="mono">
               v{release.version} · {release.released}
@@ -77,7 +77,12 @@ export function Download() {
           {ordered.map((platform, index) => {
             const isDetected = platform.id === detected
             const ready = platform.status === 'ready'
-            const mac = platform.id === 'macos'
+            const variants =
+              platform.id === 'macos'
+                ? [release.assets.macZip, release.assets.macDmg]
+                : platform.id === 'linux'
+                  ? [release.assets.linuxAppImage, release.assets.linuxDeb]
+                  : null
             return (
               <div
                 className="dl__card"
@@ -100,9 +105,9 @@ export function Download() {
 
                 {ready ? (
                   <>
-                    {mac ? (
+                    {variants ? (
                       <div className="dl__variants">
-                        {[release.assets.macZip, release.assets.macDmg].map((variant) => (
+                        {variants.map((variant) => (
                           <a key={variant.file} className="dl__btn" href={variant.file} download>
                             <span>
                               <DownloadIcon size={15} />
@@ -137,12 +142,11 @@ export function Download() {
 
                     <div className="dl__hash">
                       <span className="mono">SHA-256</span>
-                      {mac ? (
+                      {variants ? (
                         release.source === 'github' &&
-                        release.assets.macZip.sha256 &&
-                        release.assets.macDmg.sha256 ? (
+                        variants.every((variant) => Boolean(variant.sha256)) ? (
                           <div className="dl__hashes">
-                            {[release.assets.macZip, release.assets.macDmg].map((variant) => (
+                            {variants.map((variant) => (
                               <button
                                 key={variant.file}
                                 type="button"
@@ -177,10 +181,10 @@ export function Download() {
                   <>
                     <div className="dl__pendingbox">
                       <HardDrive size={18} />
-                      <p>Packaging in progress. The Windows and macOS builds are the ones shipping today.</p>
+                      <p>Packaging is still in progress for this platform.</p>
                     </div>
                     <button type="button" className="btn btn--ghost btn--lg dl__single" disabled>
-                      Linux — not yet available
+                      Not yet available
                     </button>
                   </>
                 )}
@@ -207,7 +211,8 @@ export function Download() {
                 <span className="mono">02</span>
                 <p>
                   Windows: run the per-user installer. macOS: unzip, drag <b>Aegis</b> into Applications, then
-                  right-click → <b>Open</b> the first time.
+                  right-click → <b>Open</b> the first time. Linux: mark the AppImage executable and run it, or install
+                  the <b>.deb</b> with your package manager.
                 </p>
               </li>
               <li>
@@ -217,7 +222,7 @@ export function Download() {
             </ol>
             <div className="dl__req mono">
               <span>
-                <ShieldCheck size={12} /> Windows 10/11 x64 · macOS 11+
+                <ShieldCheck size={12} /> Windows 10/11 x64 · macOS 11+ · Linux x64
               </span>
               <span>≈ 300–350 MB installed</span>
             </div>
@@ -226,7 +231,7 @@ export function Download() {
           <div className="dl__warn" data-reveal style={{ '--d': 1 } as React.CSSProperties}>
             <div className="dl__warnhead">
               <AlertTriangle size={16} />
-              <h3 className="dl__sub">Both builds are unsigned.</h3>
+              <h3 className="dl__sub">Every build is unsigned.</h3>
             </div>
             <p>
               There is no code-signing certificate behind these packages — one costs real money and Aegis is free —
@@ -249,6 +254,10 @@ export function Download() {
                   If macOS calls the bundle damaged, sign it locally with{' '}
                   <code>codesign --force --deep --sign - /Applications/Aegis.app</code>.
                 </li>
+                <li>
+                  <b>Linux AppImage:</b> run <code>chmod +x Aegis-Linux-x86_64.AppImage</code>, then launch it. The
+                  Debian package installs with <code>sudo apt install ./Aegis-Linux-x86_64.deb</code>.
+                </li>
               </ul>
             </details>
           </div>
@@ -263,6 +272,8 @@ export function Download() {
               { name: release.assets.windows.name, label: 'Windows x64', hash: release.assets.windows.sha256 },
               { name: release.assets.macZip.name, label: 'macOS universal (.zip)', hash: release.assets.macZip.sha256 },
               { name: release.assets.macDmg.name, label: 'macOS universal (.dmg)', hash: release.assets.macDmg.sha256 },
+              { name: release.assets.linuxAppImage.name, label: 'Linux x64 (.AppImage)', hash: release.assets.linuxAppImage.sha256 },
+              { name: release.assets.linuxDeb.name, label: 'Linux x64 (.deb)', hash: release.assets.linuxDeb.sha256 },
             ].map((row) => (
               <div key={row.name} className="dl__allrow">
                 <span className="mono">{row.label}</span>

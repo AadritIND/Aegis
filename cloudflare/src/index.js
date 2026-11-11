@@ -2,6 +2,8 @@ const ASSETS = {
   windows: 'Aegis-Setup.exe',
   'mac-zip': 'Aegis-mac-universal.zip',
   'mac-dmg': 'Aegis-mac-universal.dmg',
+  'linux-appimage': 'Aegis-Linux-x86_64.AppImage',
+  'linux-deb': 'Aegis-Linux-x86_64.deb',
 }
 
 const TAG_PATTERN = /^v\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$/

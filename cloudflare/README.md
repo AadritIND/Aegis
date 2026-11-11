@@ -11,13 +11,15 @@ nearest Cloudflare edge instead of making every visitor download from GitHub's r
 | `/dl/windows` | `Aegis-Setup.exe` |
 | `/dl/mac-zip` | `Aegis-mac-universal.zip` |
 | `/dl/mac-dmg` | `Aegis-mac-universal.dmg` |
-| `/dl/<tag>/<asset>` | The same assets pinned to a release tag, e.g. `/dl/v1.0.3/windows` |
+| `/dl/linux-appimage` | `Aegis-Linux-x86_64.AppImage` |
+| `/dl/linux-deb` | `Aegis-Linux-x86_64.deb` |
+| `/dl/<tag>/<asset>` | The same assets pinned to a release tag, e.g. `/dl/v1.0.4/windows` |
 
 `latest` routes cache for five minutes. Versioned routes are cached immutably, so a new release
 gets a fresh URL and never serves a stale installer. Range requests are streamed through to
 GitHub so resumable downloads keep working.
 
-The Worker only accepts the three whitelisted asset names and tags matching `v<major>.<minor>.<patch>`,
+The Worker only accepts the five whitelisted asset names and tags matching `v<major>.<minor>.<patch>`,
 so it cannot be used as an open proxy.
 
 ## Deploy
@@ -40,9 +42,9 @@ To use a different hostname, set `DOWNLOAD_BASE` in Vercel and update the fallba
 ## Verify
 
 ```bash
-curl -I https://aegis-downloads.aadritchandravanci23.workers.dev/dl/v1.0.3/windows
+curl -I https://aegis-downloads.aadritchandravanci23.workers.dev/dl/v1.0.4/windows
 curl -r 0-1048575 -o NUL -w "%{http_code} %{speed_download}\n" \
-  https://aegis-downloads.aadritchandravanci23.workers.dev/dl/v1.0.3/windows
+  https://aegis-downloads.aadritchandravanci23.workers.dev/dl/v1.0.4/windows
 ```
 
 A full request should return `200` with `Content-Disposition: attachment` and the installer's

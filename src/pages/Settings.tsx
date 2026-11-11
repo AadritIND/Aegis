@@ -480,7 +480,7 @@ export function SettingsPage() {
             <div className="about-rows">
               <div>
                 <span>Version</span>
-                <b>{info?.version || '1.0.0'}</b>
+                <b>{info?.version || '1.0.4'}</b>
               </div>
               <div>
                 <span>Runtime</span>

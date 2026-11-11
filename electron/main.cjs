@@ -252,6 +252,17 @@ function setupUpdater() {
     return
   }
 
+  // electron-updater can replace an AppImage in place, but .deb installations
+  // are owned by the system package manager.
+  if (process.platform === 'linux' && !process.env.APPIMAGE) {
+    updateState = {
+      status: 'disabled',
+      currentVersion: app.getVersion(),
+      reason: 'Use the AppImage build for in-app updates, or update the package with your system package manager.',
+    }
+    return
+  }
+
   autoUpdater.autoDownload = false
   autoUpdater.autoInstallOnAppQuit = true
   autoUpdater.allowPrerelease = false

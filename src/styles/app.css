@@ -1569,6 +1569,30 @@
   scrollbar-width: none;
 }
 
+.vault-tags {
+  align-items: center;
+  padding-top: 0;
+  padding-bottom: 12px;
+}
+
+.vault-tags__label {
+  margin-right: 2px;
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  white-space: nowrap;
+}
+
+.vault-tags .chip--tag {
+  color: var(--text-2);
+}
+
+.vault-tags .chip--tag.is-active {
+  color: var(--accent);
+}
+
 .vault-filters::-webkit-scrollbar {
   display: none;
 }
@@ -1608,10 +1632,23 @@
   border-radius: 13px;
   border: 1px solid transparent;
   cursor: pointer;
+  animation: vault-row-in 0.4s var(--ease-out) both;
+  animation-delay: calc(var(--row-index, 0) * 24ms);
   transition:
     background 0.2s ease,
     border-color 0.2s ease,
     box-shadow 0.2s ease;
+}
+
+@keyframes vault-row-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .vault-row:hover {
@@ -1896,6 +1933,41 @@
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
+}
+
+.detail__reveal {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+  padding: 7px 9px;
+  border: 1px solid rgba(var(--accent-rgb), 0.14);
+  border-radius: 9px;
+  background: rgba(var(--accent-rgb), 0.045);
+  color: var(--accent);
+  font-size: 8.5px;
+  line-height: 1.2;
+}
+
+.detail__reveal-bar {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  transform-origin: left center;
+  animation: detail-reveal-countdown 15s linear forwards;
+}
+
+@keyframes detail-reveal-countdown {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
 }
 
 .detail__badges .pill {

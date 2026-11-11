@@ -563,6 +563,8 @@ svg {
 }
 
 .btn-primary {
+  position: relative;
+  overflow: hidden;
   color: var(--accent-ink);
   background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 115%);
   border-color: rgba(255, 255, 255, 0.28);
@@ -571,6 +573,33 @@ svg {
     inset 0 1px 0 rgba(255, 255, 255, 0.55),
     inset 0 -8px 16px rgba(0, 0, 0, 0.12);
   font-weight: 620;
+}
+
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.26) 46%,
+    transparent 62%
+  );
+  transform: translateX(-120%);
+  pointer-events: none;
+}
+
+.btn-primary:hover::after {
+  animation: btn-sheen 0.75s var(--ease-out);
+}
+
+@keyframes btn-sheen {
+  from {
+    transform: translateX(-120%);
+  }
+  to {
+    transform: translateX(120%);
+  }
 }
 
 .btn-primary:hover {

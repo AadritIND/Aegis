@@ -18,7 +18,7 @@ import { TypeGlyph } from '../components/TypeGlyph'
 import { ItemDetail } from '../components/ItemDetail'
 
 type Filter = 'all' | ItemType
-type Sort = 'recent' | 'name' | 'created'
+type Sort = 'recent' | 'name' | 'created' | 'weakest'
 
 export function VaultPage() {
   const { items, health, copy, openEditor, settings } = useStore()
@@ -26,6 +26,7 @@ export function VaultPage() {
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState<Filter>('all')
   const [favoritesOnly, setFavoritesOnly] = useState(false)
+  const [tagFilter, setTagFilter] = useState<string | null>(null)
   const [sort, setSort] = useState<Sort>('recent')
 
   const counts = useMemo(
@@ -36,17 +37,34 @@ export function VaultPage() {
     [items],
   )
 
+  const tagOptions = useMemo(() => {
+    const counts = new Map<string, number>()
+    for (const item of items) {
+      for (const tag of item.tags) counts.set(tag, (counts.get(tag) || 0) + 1)
+    }
+    return [...counts.entries()]
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+      .slice(0, 8)
+      .map(([tag, count]) => ({ tag, count }))
+  }, [items])
+
   const filtered = useMemo(() => {
     let list = query.trim() ? searchItems(items, query) : [...items]
     if (filter !== 'all') list = list.filter((item) => item.type === filter)
     if (favoritesOnly) list = list.filter((item) => item.favorite)
+    if (tagFilter) list = list.filter((item) => item.tags.includes(tagFilter))
     list.sort((a, b) => {
       if (sort === 'name') return a.name.localeCompare(b.name)
       if (sort === 'created') return b.createdAt - a.createdAt
+      if (sort === 'weakest') {
+        const aScore = health.perItem[a.id]?.strength?.score ?? 5
+        const bScore = health.perItem[b.id]?.strength?.score ?? 5
+        return aScore - bScore || a.name.localeCompare(b.name)
+      }
       return (b.lastUsedAt || b.updatedAt) - (a.lastUsedAt || a.updatedAt)
     })
     return list
-  }, [favoritesOnly, filter, items, query, sort])
+  }, [favoritesOnly, filter, health, items, query, sort, tagFilter])
 
   useEffect(() => {
     if (!filtered.some((item) => item.id === selectedId)) {
@@ -54,8 +72,12 @@ export function VaultPage() {
     }
   }, [filtered, selectedId])
 
+  useEffect(() => {
+    if (tagFilter && !tagOptions.some((option) => option.tag === tagFilter)) setTagFilter(null)
+  }, [tagFilter, tagOptions])
+
   const selected = items.find((item) => item.id === selectedId) || null
-  const activeFilters = filter !== 'all' || favoritesOnly || Boolean(query)
+  const activeFilters = filter !== 'all' || favoritesOnly || Boolean(query) || Boolean(tagFilter)
 
   return (
     <>
@@ -137,10 +159,28 @@ export function VaultPage() {
                 <option value="recent">Recent</option>
                 <option value="name">A → Z</option>
                 <option value="created">Newest</option>
+                <option value="weakest">Weakest first</option>
               </select>
               <ChevronDown size={13} className="select-wrap__chevron" />
             </div>
           </div>
+
+          {tagOptions.length > 0 && (
+            <div className="vault-filters vault-tags">
+              <span className="vault-tags__label">Tags</span>
+              {tagOptions.map(({ tag, count }) => (
+                <button
+                  key={tag}
+                  type="button"
+                  className={cn('chip chip--tag', tagFilter === tag && 'is-active')}
+                  onClick={() => setTagFilter((prev) => (prev === tag ? null : tag))}
+                  aria-pressed={tagFilter === tag}
+                >
+                  #{tag} <span className="chip__count">{count}</span>
+                </button>
+              ))}
+            </div>
+          )}
 
           <div className="vault-filters">
             <button
@@ -193,6 +233,7 @@ export function VaultPage() {
                         setQuery('')
                         setFilter('all')
                         setFavoritesOnly(false)
+                        setTagFilter(null)
                       }}
                     >
                       Clear filters
@@ -202,7 +243,7 @@ export function VaultPage() {
               </div>
             )}
 
-            {filtered.map((item) => {
+            {filtered.map((item, index) => {
               const itemHealth = health.perItem[item.id]
               const primary = primaryField(item)
               const strength = itemHealth?.strength?.score
@@ -210,6 +251,7 @@ export function VaultPage() {
                 <div
                   key={item.id}
                   className={cn('vault-row', selectedId === item.id && 'is-selected')}
+                  style={{ '--row-index': index } as React.CSSProperties}
                   role="button"
                   tabIndex={0}
                   onClick={() => setSelectedId(item.id)}

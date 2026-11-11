@@ -12,12 +12,17 @@ export function Hero({ booted, tint }: { booted: boolean; tint: string }) {
   const root = useRef<HTMLElement>(null)
   const reduced = useReducedMotion()
   const detected = detectPlatform()
-  const mac = detectPlatform() === 'macos'
+  const mac = detected === 'macos'
+  const linux = detected === 'linux'
   const release = useRelease()
 
   const windows = PLATFORMS.find((platform) => platform.id === 'windows')
-  const installHref = mac ? '#download' : (windows?.file ?? RELEASE.windows.file)
-  const installLabel = mac ? 'Get Aegis for macOS' : 'Download for Windows'
+  const installHref = mac || linux ? '#download' : (windows?.file ?? RELEASE.windows.file)
+  const installLabel = mac
+    ? 'Get Aegis for macOS'
+    : linux
+      ? 'Get Aegis for Linux'
+      : 'Download for Windows'
 
   useLayoutEffect(() => {
     if (reduced) return
@@ -88,6 +93,8 @@ export function Hero({ booted, tint }: { booted: boolean; tint: string }) {
             <i />
             <span>macOS 11+</span>
             <i />
+            <span>Linux x64</span>
+            <i />
             <span>No account</span>
           </span>
         </div>
@@ -121,7 +128,7 @@ export function Hero({ booted, tint }: { booted: boolean; tint: string }) {
 
           <div className="hero__actions">
             <Magnetic>
-              <a className="btn btn--primary btn--lg" href={installHref} download={!mac}>
+              <a className="btn btn--primary btn--lg" href={installHref} download={!mac && !linux}>
                 <Download size={17} strokeWidth={2.2} />
                 {installLabel}
               </a>
@@ -136,7 +143,11 @@ export function Hero({ booted, tint }: { booted: boolean; tint: string }) {
             <span className="mono">v{release.version}</span>
             <span className="mono">free forever</span>
             <span className="mono">
-              {detected === 'macos' ? 'universal build' : `${release.assets.windows.size} installer`}
+              {detected === 'macos'
+                ? 'universal build'
+                : detected === 'linux'
+                  ? 'AppImage + .deb'
+                  : `${release.assets.windows.size} installer`}
             </span>
           </div>
         </div>

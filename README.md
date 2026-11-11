@@ -17,8 +17,9 @@ The marketing site for it lives in [`website/`](website) — a separate Vite app
 - **Security audit** — strength, reuse, age, missing 2FA and optional Have I Been Pwned range checks (only a 5-character SHA-1 prefix leaves the machine).
 - **Autofill** — a focused browser pane with a credential picker, one-click fill/copy and an allow-listed HTTPS webview.
 - **Encrypted backups** — export/import `.aegis` files protected by their own password.
+- **Auto-hiding reveals** — revealed secrets hide again after 15 seconds; vault tags and weakest-first sorting make large vaults easier to triage.
 - **Command palette** — `Ctrl+K` for fuzzy search, navigation and quick actions.
-- **Variable window** — frameless custom titlebar with native window controls; minimum 1040×740.
+- **Variable window** — frameless custom titlebar with native window controls; minimum 1040×700.
 
 ## Run it
 
@@ -40,6 +41,16 @@ Create a Windows installer:
 npm run dist       # NSIS installer in release/
 ```
 
+Create Linux packages (on a Linux host, or let the release workflow do it):
+
+```bash
+npm run dist:linux      # AppImage + .deb in release/
+npm run dist:linux:dir  # unpacked Linux app in release/linux-unpacked
+```
+
+The Linux build ships as an x64 AppImage for portable use and a Debian package for Ubuntu, Debian and Mint. The release assets are `Aegis-Linux-x86_64.AppImage` and `Aegis-Linux-x86_64.deb`.
+The AppImage updates itself in place; the `.deb` is updated through the system package manager.
+
 Build the macOS app (works from Windows or Linux — see below):
 
 ```bash
@@ -60,9 +71,9 @@ npm run dist:mac   # Aegis-<version>-mac-arm64.zip + -mac-x64.zip, copied into w
 
 ## Updates
 
-Aegis updates itself from GitHub Releases. Installed builds check about seven seconds after launch and every six hours after that, on resume from sleep, and whenever you press **Check for updates** in Settings → About. When a newer release exists, an in-app card shows the version and release notes with download progress, then offers **Restart & install**. Updates replace the application only; the encrypted vault file is untouched.
+Aegis updates itself from GitHub Releases. Installed builds check about seven seconds after launch and every six hours after that, on resume from sleep, and whenever you press **Check for updates** in Settings → About. When a newer release exists, an in-app card shows the version and release notes with download progress, then offers **Restart & install**. Updates replace the application only; the encrypted vault file is untouched. Linux AppImage builds use the same updater; `.deb` installs are owned by the system package manager, so in-app updates are disabled for them.
 
-Every push to `main` runs [`.github/workflows/release.yml`](.github/workflows/release.yml), which stamps a version from the Actions run number (`1.0.<run>`), builds the Windows NSIS installer and a universal macOS app, uploads them to a draft release, verifies `latest.yml` / `latest-mac.yml`, and publishes the release. Pushing code alone is not enough for an update — the workflow's build is what `electron-updater` sees. You can also run it manually from the Actions tab.
+Every push to `main` that changes the desktop app runs [`.github/workflows/release.yml`](.github/workflows/release.yml), which uses the version in `package.json`, builds the Windows NSIS installer, a universal macOS app, and Linux AppImage/DEB packages, uploads them to a draft release, verifies `latest.yml` / `latest-mac.yml` / `latest-linux.yml`, and publishes the release. Bump `version` in `package.json` before pushing app changes. Pushing code alone is not enough for an update — the workflow's build is what `electron-updater` sees. You can also run it manually from the Actions tab and override the version for a one-off build.
 
 Dev builds (`npm run dev`) report the updater as disabled; only installed builds can update. Windows NSIS installs update unsigned. macOS requires a Developer ID–signed build for Squirrel.Mac to apply an update, so the unsigned preview can detect a release but not install it.
 
@@ -97,7 +108,7 @@ stays menu-less on Windows and Linux, where the window chrome is custom.
 
 ## Where your data lives
 
-`%APPDATA%/Aegis/aegis.vault` on Windows (`app.getPath('userData')` elsewhere). The file is a JSON envelope containing the KDF parameters, IV, auth tag and ciphertext — no item names, URLs or secrets. A `.bak` copy is kept beside it on each write.
+`%APPDATA%/Aegis/aegis.vault` on Windows, `~/.config/Aegis/aegis.vault` (or `$XDG_CONFIG_HOME/Aegis/aegis.vault`) on Linux, and `app.getPath('userData')` on macOS. The file is a JSON envelope containing the KDF parameters, IV, auth tag and ciphertext — no item names, URLs or secrets. A `.bak` copy is kept beside it on each write.
 
 Losing the master password means losing the vault. The hint is stored in clear text in the envelope by design; use it as a memory aid, not as a second password.
 

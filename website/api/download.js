@@ -14,7 +14,7 @@ export default async function handler(req, res) {
   if (!target) {
     res.status(400).json({
       error: 'Unknown asset',
-      assets: ['windows', 'mac-zip', 'mac-dmg'],
+      assets: ['windows', 'mac-zip', 'mac-dmg', 'linux-appimage', 'linux-deb'],
     })
     return
   }

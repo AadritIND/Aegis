@@ -10,13 +10,15 @@ const DOWNLOADS = {
   windows: `${DOWNLOAD_BASE}/dl/latest/windows`,
   macZip: `${DOWNLOAD_BASE}/dl/latest/mac-zip`,
   macDmg: `${DOWNLOAD_BASE}/dl/latest/mac-dmg`,
+  linuxAppImage: `${DOWNLOAD_BASE}/dl/latest/linux-appimage`,
+  linuxDeb: `${DOWNLOAD_BASE}/dl/latest/linux-deb`,
 }
 
 export const SITE = {
   name: 'Aegis',
   tagline: 'The quiet vault for everything private.',
   url: 'https://aegissvault.vercel.app',
-  version: '1.0.3',
+  version: '1.0.4',
   released: 'November 2026',
   // Repository / support links.
   repo: 'https://github.com/AadritIND/Aegis',
@@ -52,10 +54,10 @@ export const PLATFORMS: Platform[] = [
   {
     id: 'linux',
     label: 'Linux',
-    detail: 'AppImage · Debian & Fedora families',
-    file: null,
-    size: '',
-    status: 'building',
+    detail: 'Linux x64 · AppImage or Debian package',
+    file: `${DOWNLOADS.linuxAppImage}`,
+    size: '~110 MB / ~85 MB',
+    status: 'ready',
   },
 ]
 
@@ -112,6 +114,16 @@ export const RELEASE = {
     dmg: {
       file: `${DOWNLOADS.macDmg}`,
       size: '177 MB',
+    },
+  },
+  linux: {
+    appImage: {
+      file: `${DOWNLOADS.linuxAppImage}`,
+      size: '~110 MB',
+    },
+    deb: {
+      file: `${DOWNLOADS.linuxDeb}`,
+      size: '~85 MB',
     },
   },
 }
