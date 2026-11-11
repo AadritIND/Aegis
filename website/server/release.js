@@ -10,31 +10,31 @@ export const ASSETS = {
     name: 'Aegis-Setup.exe',
     label: 'Windows x64',
     query: 'windows',
-    bytes: 85251193,
+    bytes: 85300387,
   },
   macZip: {
     name: 'Aegis-mac-universal.zip',
     label: 'Universal .zip',
     query: 'mac-zip',
-    bytes: 178824395,
+    bytes: 178875247,
   },
   macDmg: {
     name: 'Aegis-mac-universal.dmg',
     label: 'Universal .dmg',
     query: 'mac-dmg',
-    bytes: 185262689,
+    bytes: 185301151,
   },
   linuxAppImage: {
     name: 'Aegis-Linux-x86_64.AppImage',
     label: 'AppImage (x64)',
     query: 'linux-appimage',
-    bytes: 120000000,
+    bytes: 113312493,
   },
   linuxDeb: {
     name: 'Aegis-Linux-x86_64.deb',
     label: '.deb (x64)',
     query: 'linux-deb',
-    bytes: 90000000,
+    bytes: 77893410,
   },
 }
 

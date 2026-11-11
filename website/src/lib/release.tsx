@@ -37,7 +37,7 @@ const FALLBACK: LatestRelease = {
       label: 'Windows x64',
       file: RELEASE.windows.file,
       size: RELEASE.windows.size,
-      bytes: 85251193,
+      bytes: 85300387,
       sha256: '',
     },
     macZip: {
@@ -46,7 +46,7 @@ const FALLBACK: LatestRelease = {
       label: 'Universal .zip',
       file: RELEASE.macos.zip.file,
       size: RELEASE.macos.zip.size,
-      bytes: 178824395,
+      bytes: 178875247,
       sha256: '',
     },
     macDmg: {
@@ -55,7 +55,7 @@ const FALLBACK: LatestRelease = {
       label: 'Universal .dmg',
       file: RELEASE.macos.dmg.file,
       size: RELEASE.macos.dmg.size,
-      bytes: 185262689,
+      bytes: 185301151,
       sha256: '',
     },
     linuxAppImage: {
@@ -64,7 +64,7 @@ const FALLBACK: LatestRelease = {
       label: 'AppImage (x64)',
       file: RELEASE.linux.appImage.file,
       size: RELEASE.linux.appImage.size,
-      bytes: null,
+      bytes: 113312493,
       sha256: '',
     },
     linuxDeb: {
@@ -73,7 +73,7 @@ const FALLBACK: LatestRelease = {
       label: '.deb (x64)',
       file: RELEASE.linux.deb.file,
       size: RELEASE.linux.deb.size,
-      bytes: null,
+      bytes: 77893410,
       sha256: '',
     },
   },

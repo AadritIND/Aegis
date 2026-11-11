@@ -56,7 +56,7 @@ export const PLATFORMS: Platform[] = [
     label: 'Linux',
     detail: 'Linux x64 · AppImage or Debian package',
     file: `${DOWNLOADS.linuxAppImage}`,
-    size: '~110 MB / ~85 MB',
+    size: '108 MB / 74 MB',
     status: 'ready',
   },
 ]
@@ -119,11 +119,11 @@ export const RELEASE = {
   linux: {
     appImage: {
       file: `${DOWNLOADS.linuxAppImage}`,
-      size: '~110 MB',
+      size: '108 MB',
     },
     deb: {
       file: `${DOWNLOADS.linuxDeb}`,
-      size: '~85 MB',
+      size: '74 MB',
     },
   },
 }
